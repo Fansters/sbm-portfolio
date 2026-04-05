@@ -1,26 +1,56 @@
 "use client";
 
 import Navbar from "@/app/components/Navbar";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true);
 
+	// Mouse Parallax Setup
+	const mouseX = useMotionValue(0);
+	const mouseY = useMotionValue(0);
+	const springConfig = { damping: 25, stiffness: 150 };
+	const smoothX = useSpring(mouseX, springConfig);
+	const smoothY = useSpring(mouseY, springConfig);
+
+	const tooltip1X = useTransform(smoothX, [-1, 1], [-20, 20]);
+	const tooltip1Y = useTransform(smoothY, [-1, 1], [-20, 20]);
+	const tooltip2X = useTransform(smoothX, [-1, 1], [32, -32]);
+	const tooltip2Y = useTransform(smoothY, [-1, 1], [32, -32]);
+
+	const handleMouseMove = (e: React.MouseEvent) => {
+		const { clientX, clientY } = e;
+		const targetX = (clientX / window.innerWidth - 0.5) * 2;
+		const targetY = (clientY / window.innerHeight - 0.5) * 2;
+		mouseX.set(targetX);
+		mouseY.set(targetY);
+	};
+
 	useEffect(() => {
-		// Simulate loading to show the pulsating logo before revealing the site
 		const timer = setTimeout(() => setIsLoading(false), 2000);
 		return () => clearTimeout(timer);
 	}, []);
 
-	// Framer Motion Variants for the new Character Typing Effect
-	const containerVariants = {
+	// --- NEW SEQUENCED ANIMATION VARIANTS ---
+
+	// 1. "Hello There" types in first
+	const helloVariants = {
 		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: { staggerChildren: 0.05, delayChildren: 0.2 },
-		},
+		visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.2 } },
+	};
+
+	// 2. 1 Second Pause, then Main Title types in
+	const titleVariants = {
+		hidden: { opacity: 0 },
+		visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 1.8 } },
+	};
+
+	// 3. 1 Second Pause, then paragraph and button fade in together
+	const fadeVariants = {
+		hidden: { opacity: 0, y: 10 },
+		visible: { opacity: 1, y: 0, transition: { delay: 4.0, duration: 0.8 } },
 	};
 
 	const letterVariants = {
@@ -48,28 +78,37 @@ export default function Home() {
 				)}
 			</AnimatePresence>
 
-			{/* Import the Navbar */}
 			<Navbar />
 
 			{/* --- HERO SECTION --- */}
-			<main id='home' className='relative bg-gray-50 min-h-[100svh] pt-24 flex items-center px-6 md:px-12 lg:px-24'>
+			<main
+				id='home'
+				onMouseMove={handleMouseMove}
+				className='relative bg-gray-50 min-h-[100svh] pt-12 md:pt-24 lg:pt-32 flex items-center px-6 md:px-12 lg:px-24'
+			>
 				{/* Left Column: Text Content */}
-				{/* Increased z-index to 40 so text is above everything */}
-				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 z-40 relative pb-32 lg:pb-0'>
-					<motion.div
-						initial={{ opacity: 0, x: -50 }}
-						animate={!isLoading ? { opacity: 1, x: 0 } : {}}
-						transition={{ duration: 0.8, delay: 0.5 }}
-						className='flex flex-col gap-6 max-w-xl mt-12 md:mt-0'
-					>
-						<h2 className='text-xl md:text-2xl text-gray-600 font-medium'>Hello There!</h2>
-
-						{/* TYPING ANIMATION TITLE */}
-						<motion.h1
-							variants={containerVariants}
+				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 z-40 relative pb-[260px] lg:pb-0'>
+					<div className='flex flex-col gap-4 md:gap-6 max-w-xl mt-2 md:mt-0'>
+						{/* 1. Hello There Animation */}
+						<motion.h2
+							variants={helloVariants}
 							initial='hidden'
 							animate={!isLoading ? "visible" : "hidden"}
-							className='text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight'
+							className='text-lg md:text-xl lg:text-2xl text-gray-600 font-medium flex'
+						>
+							{"Hello There!".split("").map((char, i) => (
+								<motion.span key={`hello-${i}`} variants={letterVariants}>
+									{char === " " ? "\u00A0" : char}
+								</motion.span>
+							))}
+						</motion.h2>
+
+						{/* 2. Main Title Animation */}
+						<motion.h1
+							variants={titleVariants}
+							initial='hidden'
+							animate={!isLoading ? "visible" : "hidden"}
+							className='text-4xl md:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight md:leading-tight'
 						>
 							{"I'm ".split("").map((char, i) => (
 								<motion.span key={`im-${i}`} variants={letterVariants}>
@@ -97,51 +136,53 @@ export default function Home() {
 							))}
 						</motion.h1>
 
-						<p className='text-gray-600 text-base md:text-lg leading-relaxed max-w-md'>
-							I&apos;m Sheremie, I help you stay organized, manage your tasks, and keep your business running smoothly
-							so you can focus on what matters most.
-						</p>
+						{/* 3. Fade In Details & Button */}
+						<motion.div
+							variants={fadeVariants}
+							initial='hidden'
+							animate={!isLoading ? "visible" : "hidden"}
+							className='flex flex-col gap-4 md:gap-6'
+						>
+							<p className='text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed max-w-md'>
+								I&apos;m Sheremie, I help you stay organized, manage your tasks, and keep your business running smoothly
+								so you can focus on what matters most.
+							</p>
 
-						<p className='text-sm text-gray-500 italic'>Currently available for 2-3 new clients</p>
+							<p className='text-xs md:text-sm text-gray-500 italic'>Currently available for 2-3 new clients</p>
 
-						<div className='pt-2'>
-							<button className='bg-brandMaroon hover:bg-[#600f1e] text-white px-8 py-3.5 rounded-full text-base font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1'>
-								Hire Me!
-							</button>
-						</div>
-					</motion.div>
+							<div className='pt-2'>
+								<button className='bg-brandMaroon hover:bg-[#600f1e] text-white px-6 py-3 md:px-8 md:py-3.5 rounded-full text-sm md:text-base font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1'>
+									Hire Me!
+								</button>
+							</div>
+						</motion.div>
+					</div>
 				</div>
 
 				{/* Right Column: Absolutely Positioned Image container */}
-				{/* z-20 means it sits BEHIND the swoosh (which is z-30) */}
 				<div className='absolute bottom-0 right-0 lg:right-[5%] w-full lg:w-1/2 h-full pointer-events-none flex items-end justify-center z-20'>
-					{/* Pink Background Blob - Reduced size */}
-					<motion.div
-						initial={{ opacity: 0, scale: 0.8 }}
-						animate={!isLoading ? { opacity: 1, scale: 1 } : {}}
-						transition={{ duration: 1 }}
-						className='absolute top-[15%] lg:top-[20%] right-[0%] lg:right-[-5%] w-[80%] md:w-[65%] lg:w-[55%] aspect-square -z-10'
-					>
-						<svg
-							className='w-full h-full text-brandPink transform translate-x-4'
-							viewBox='0 0 200 200'
-							xmlns='http://www.w3.org/2000/svg'
-						>
-							<path
-								fill='currentColor'
-								d='M51.9,-64.8C65.5,-51.9,73.5,-32.5,75.4,-13.2C77.3,6.2,73.1,25.5,61.9,39.6C50.7,53.7,32.5,62.6,12.7,67.6C-7.2,72.5,-28.6,73.5,-44.6,63.9C-60.6,54.3,-71.2,34.1,-74.6,12.8C-78,-8.5,-74.2,-30.9,-61.8,-45.3C-49.4,-59.6,-28.4,-65.9,-8.6,-68.2C11.3,-70.5,38.3,-77.8,51.9,-64.8Z'
-								transform='translate(100 100) scale(1.1)'
-							/>
-						</svg>
-					</motion.div>
-
-					{/* Profile Image - Adjusted sizes for mobile and desktop */}
 					<motion.div
 						initial={{ opacity: 0, y: 50 }}
 						animate={!isLoading ? { opacity: 1, y: 0 } : {}}
 						transition={{ duration: 0.8, delay: 0.4 }}
-						className='relative z-10 w-[230px] md:w-[380px] lg:w-[520px]'
+						className='relative z-10 w-[75%] sm:w-[65%] max-w-[350px] lg:max-w-none lg:w-[85%] xl:w-[70%] 2xl:w-[65%]'
 					>
+						{/* Pink Background Blob */}
+						<div className='absolute top-[10%] right-[5%] w-full aspect-square -z-10 text-brandPink pointer-events-none'>
+							<svg
+								className='w-full h-full transform translate-x-4'
+								viewBox='0 0 200 200'
+								xmlns='http://www.w3.org/2000/svg'
+							>
+								<path
+									fill='currentColor'
+									d='M51.9,-64.8C65.5,-51.9,73.5,-32.5,75.4,-13.2C77.3,6.2,73.1,25.5,61.9,39.6C50.7,53.7,32.5,62.6,12.7,67.6C-7.2,72.5,-28.6,73.5,-44.6,63.9C-60.6,54.3,-71.2,34.1,-74.6,12.8C-78,-8.5,-74.2,-30.9,-61.8,-45.3C-49.4,-59.6,-28.4,-65.9,-8.6,-68.2C11.3,-70.5,38.3,-77.8,51.9,-64.8Z'
+									transform='translate(100 100) scale(1.1)'
+								/>
+							</svg>
+						</div>
+
+						{/* Profile Image */}
 						<Image
 							src='/sheremie.png'
 							alt='Sheremie - Virtual Assistant'
@@ -151,47 +192,49 @@ export default function Home() {
 							priority
 						/>
 
-						{/* Top Right Tooltip - Pink (with CSS Triangle) */}
+						{/* Top Right Tooltip - Pink */}
 						<motion.div
-							animate={{ y: [0, -10, 0] }}
-							transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-							className='absolute right-[-10%] md:-right-8 bottom-[45%] md:bottom-[40%] z-30 pointer-events-auto'
+							style={{ x: tooltip1X, y: tooltip1Y }}
+							className='absolute right-[2%] md:right-0 lg:right-[-2%] bottom-[45%] md:bottom-[40%] z-30 pointer-events-auto'
 						>
-							<div className='relative bg-brandPink text-white px-5 py-2.5 rounded-full text-xs md:text-sm font-medium shadow-lg whitespace-nowrap'>
+							<motion.div
+								animate={{ y: [0, -8, 0] }}
+								transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+								className='relative bg-brandPink text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-medium shadow-lg whitespace-nowrap'
+							>
 								The Support You Need
-								{/* CSS Triangle pointing left */}
-								<div className='absolute top-1/2 -translate-y-1/2 -left-2 w-0 h-0 border-y-[6px] border-y-transparent border-r-[8px] border-r-brandPink'></div>
-							</div>
+								<div className='absolute top-1/2 -translate-y-1/2 -left-1.5 md:-left-2 w-0 h-0 border-y-[4px] md:border-y-[6px] border-y-transparent border-r-[6px] md:border-r-[8px] border-r-brandPink'></div>
+							</motion.div>
 						</motion.div>
 
-						{/* Bottom Left Tooltip - Maroon (with CSS Triangle) */}
+						{/* Bottom Left Tooltip - Maroon */}
 						<motion.div
-							animate={{ y: [0, 10, 0] }}
-							transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-							className='absolute left-[-10%] md:-left-12 bottom-[15%] md:bottom-[20%] z-30 pointer-events-auto'
+							style={{ x: tooltip2X, y: tooltip2Y }}
+							className='absolute left-[2%] md:left-0 lg:left-[-4%] bottom-[15%] md:bottom-[20%] z-30 pointer-events-auto'
 						>
-							<div className='relative bg-brandMaroon text-white px-5 py-2.5 rounded-full text-xs md:text-sm font-medium shadow-lg whitespace-nowrap'>
+							<motion.div
+								animate={{ y: [0, 8, 0] }}
+								transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+								className='relative bg-brandMaroon text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-medium shadow-lg whitespace-nowrap'
+							>
 								Your Virtual Assistant
-								{/* CSS Triangle pointing up on the left side */}
-								<div className='absolute -top-2 left-6 w-0 h-0 border-x-[6px] border-x-transparent border-b-[8px] border-b-brandMaroon'></div>
-							</div>
+								<div className='absolute -top-1.5 md:-top-2 left-4 md:left-6 w-0 h-0 border-x-[4px] md:border-x-[6px] border-x-transparent border-b-[6px] md:border-b-[8px] border-b-brandMaroon'></div>
+							</motion.div>
 						</motion.div>
 					</motion.div>
 				</div>
 
-				{/* --- CUSTOM CANVA SWOOSH --- */}
-				{/* Set to z-30 so it sits ON TOP of the image (which is z-20) */}
-				<div className='absolute bottom-0 left-0 w-full z-30 pointer-events-none drop-shadow-sm'>
-					<svg viewBox='0 0 1440 120' className='w-full block h-16 md:h-24 lg:h-32' preserveAspectRatio='none'>
-						{/* Lighter Pink Layer */}
-						<path d='M0,50 C400,100 1000,0 1440,70 L1440,120 L0,120 Z' fill='var(--color-brandPink)' opacity='0.9' />
-						{/* Darker Maroon Layer */}
-						<path d='M0,80 C400,120 1000,40 1440,90 L1440,120 L0,120 Z' fill='var(--color-brandMaroon)' />
-					</svg>
+				{/* --- CUSTOM STRAIGHT DIV BOTTOM --- */}
+				<div className='absolute bottom-0 left-0 w-full h-8 z-30 pointer-events-none flex items-end justify-center'>
+					{/* Maroon Div - Behind, slightly wider, rotated dynamically to peek out */}
+					<div className='absolute w-[110%] h-8 bg-brandMaroon rotate-[-5deg] md:rotate-[-2deg] lg:rotate-[-1.5deg] origin-center'></div>
+
+					{/* Pink Div - In front, completely straight */}
+					<div className='absolute w-full h-8 bg-brandPink'></div>
 				</div>
 			</main>
 
-			{/* Services Section starts here */}
+			{/* Services Section */}
 			<section
 				id='services'
 				className='min-h-screen bg-white flex flex-col items-center justify-center relative z-40 pt-20'
