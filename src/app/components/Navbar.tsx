@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
 export default function Navbar() {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-	const menuVariants = {
+	const menuVariants: Variants = {
 		closed: {
 			clipPath: "circle(0px at calc(100% - 40px) 40px)",
 			transition: { type: "spring", stiffness: 400, damping: 40 },

@@ -41,16 +41,16 @@ export default function Home() {
 		visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.2 } },
 	};
 
-	// 2. 1 Second Pause, then Main Title types in
+	// 2. Reduced Pause (-0.2s), then Main Title types in
 	const titleVariants = {
 		hidden: { opacity: 0 },
-		visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 1.8 } },
+		visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 1.6 } },
 	};
 
-	// 3. 1 Second Pause, then paragraph and button fade in together
+	// 3. Reduced Pause (-0.2s gap), then paragraph and button fade in together
 	const fadeVariants = {
 		hidden: { opacity: 0, y: 10 },
-		visible: { opacity: 1, y: 0, transition: { delay: 4.0, duration: 0.8 } },
+		visible: { opacity: 1, y: 0, transition: { delay: 3.6, duration: 0.8 } },
 	};
 
 	const letterVariants = {
