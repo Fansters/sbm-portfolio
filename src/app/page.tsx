@@ -1,14 +1,52 @@
 "use client";
 
 import Navbar from "@/app/components/Navbar";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
+// --- DATA FOR SERVICES SECTION ---
+const servicesData = [
+	{
+		number: "01",
+		title: "BASIC",
+		desc: "Best for light tasks and day-to-day assistance",
+		// To change colors manually, edit the "from-...", "via-...", and "to-..." classes below!
+		glassClass:
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-3xl border-[1.5px] border-white/60 shadow-[0_15px_40px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.8),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+		items: ["Calendar management", "Email organization", "Task tracking", "Basic admin support"],
+	},
+	{
+		number: "02",
+		title: "PRO",
+		desc: "For individuals who need consistent, reliable support",
+		glassClass:
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/20 via-brandPink/20 to-brandMaroon/10 backdrop-blur-3xl border-[1.5px] border-white/50 shadow-[0_15px_40px_rgba(122,19,39,0.15),inset_0_2px_4px_rgba(255,255,255,0.7),inset_0_-2px_4px_rgba(255,255,255,0.2)]",
+		items: ["All Essential", "Inbox & communication", "Social media support", "Content posting"],
+	},
+	{
+		number: "03",
+		title: "CUSTOM",
+		desc: "Flexible support for your workflow and needs",
+		glassClass:
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-3xl border-[1.5px] border-white/60 shadow-[0_15px_40px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.8),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+		items: ["Customized tasks", "Ongoing admin support", "Priority assistance", "Scalable support"],
+	},
+];
 
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true);
+	const [isMobile, setIsMobile] = useState(false);
 
-	// Mouse Parallax Setup
+	// Responsive check for scroll animation timings
+	useEffect(() => {
+		const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+		checkMobile(); // Check immediately on mount
+		window.addEventListener("resize", checkMobile);
+		return () => window.removeEventListener("resize", checkMobile);
+	}, []);
+
+	// --- MOUSE PARALLAX SETUP (Hero) ---
 	const mouseX = useMotionValue(0);
 	const mouseY = useMotionValue(0);
 	const springConfig = { damping: 25, stiffness: 150 };
@@ -33,21 +71,56 @@ export default function Home() {
 		return () => clearTimeout(timer);
 	}, []);
 
-	// --- NEW SEQUENCED ANIMATION VARIANTS ---
+	// --- SCROLL ANIMATION SETUP (Services) ---
+	const servicesRef = useRef<HTMLElement>(null);
 
-	// 1. "Hello There" types in first
+	const { scrollYProgress: servicesScroll } = useScroll({
+		target: servicesRef,
+		offset: ["start end", "end start"],
+	});
+
+	// RESPONSIVE & STAGGERED TIMING ARRAYS
+	// Desktop: Exits start at 0.70 and stagger (Card 1 leaves first, then Card 2, then Card 3)
+	// Mobile: Exits start at 0.85 and stagger, finishing exactly at 1.0
+	const r1 = isMobile ? [0.02, 0.2, 0.6, 0.99] : [0.0, 0.35, 0.6, 0.99];
+	const r2 = isMobile ? [0.04, 0.3, 0.7, 0.99] : [0.0, 0.38, 0.6, 0.99];
+	const r3 = isMobile ? [0.07, 0.4, 0.88, 1.0] : [0.0, 0.42, 0.6, 0.99];
+
+	// Apply the dynamic ranges to the transforms
+	// Removed the X-axis transforms entirely so they only move vertically
+	const card1Y = useTransform(servicesScroll, r1, [400, 0, 0, -400]);
+	const card2Y = useTransform(servicesScroll, r2, [400, 0, 0, -500]);
+	const card3Y = useTransform(servicesScroll, r3, [400, 0, 0, -400]);
+
+	const card1Scale = useTransform(servicesScroll, r1, [0.8, 1, 1, 0.8]);
+	const card2Scale = useTransform(servicesScroll, r2, [0.8, 1, 1, 0.8]);
+	const card3Scale = useTransform(servicesScroll, r3, [0.8, 1, 1, 0.8]);
+
+	// Opacity fades out slightly after movement starts to keep them visible longer
+	const op1 = isMobile ? [0.1, 0.4, 0.9, 0.95] : [0.1, 0.4, 0.75, 0.85];
+	const op2 = isMobile ? [0.15, 0.45, 0.92, 0.98] : [0.15, 0.45, 0.8, 0.9];
+	const op3 = isMobile ? [0.2, 0.5, 0.95, 1.0] : [0.2, 0.5, 0.85, 0.95];
+
+	const card1Opacity = useTransform(servicesScroll, op1, [0, 1, 1, 0]);
+	const card2Opacity = useTransform(servicesScroll, op2, [0, 1, 1, 0]);
+	const card3Opacity = useTransform(servicesScroll, op3, [0, 1, 1, 0]);
+
+	// Grouping them into arrays so we can easily map them in the JSX
+	const cardYTransforms = [card1Y, card2Y, card3Y];
+	const cardScales = [card1Scale, card2Scale, card3Scale];
+	const cardOpacities = [card1Opacity, card2Opacity, card3Opacity];
+
+	// Hero Animation Variants
 	const helloVariants = {
 		hidden: { opacity: 0 },
 		visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.2 } },
 	};
 
-	// 2. Reduced Pause (-0.2s), then Main Title types in
 	const titleVariants = {
 		hidden: { opacity: 0 },
 		visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 1.6 } },
 	};
 
-	// 3. Reduced Pause (-0.2s gap), then paragraph and button fade in together
 	const fadeVariants = {
 		hidden: { opacity: 0, y: 10 },
 		visible: { opacity: 1, y: 0, transition: { delay: 3.6, duration: 0.8 } },
@@ -59,7 +132,10 @@ export default function Home() {
 	};
 
 	return (
-		<div className='min-h-screen bg-white flex flex-col overflow-x-hidden'>
+		<div
+			className='min-h-screen flex flex-col overflow-x-hidden'
+			style={{ backgroundImage: 'url("/prism.svg")', backgroundRepeat: "repeat" }}
+		>
 			{/* LOADING SCREEN */}
 			<AnimatePresence>
 				{isLoading && (
@@ -84,12 +160,10 @@ export default function Home() {
 			<main
 				id='home'
 				onMouseMove={handleMouseMove}
-				className='relative bg-gray-50 min-h-[100svh] pt-12 md:pt-24 lg:pt-32 flex items-center px-6 md:px-12 lg:px-24'
+				className='relative min-h-[100svh] pt-12 md:pt-24 lg:pt-32 flex items-center px-6 md:px-12 lg:px-24'
 			>
-				{/* Left Column: Text Content */}
 				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 z-40 relative pb-[260px] lg:pb-0'>
 					<div className='flex flex-col gap-4 md:gap-6 max-w-xl mt-2 md:mt-0'>
-						{/* 1. Hello There Animation */}
 						<motion.h2
 							variants={helloVariants}
 							initial='hidden'
@@ -103,7 +177,6 @@ export default function Home() {
 							))}
 						</motion.h2>
 
-						{/* 2. Main Title Animation */}
 						<motion.h1
 							variants={titleVariants}
 							initial='hidden'
@@ -136,7 +209,6 @@ export default function Home() {
 							))}
 						</motion.h1>
 
-						{/* 3. Fade In Details & Button */}
 						<motion.div
 							variants={fadeVariants}
 							initial='hidden'
@@ -159,7 +231,6 @@ export default function Home() {
 					</div>
 				</div>
 
-				{/* Right Column: Absolutely Positioned Image container */}
 				<div className='absolute bottom-0 right-0 lg:right-[5%] w-full lg:w-1/2 h-full pointer-events-none flex items-end justify-center z-20'>
 					<motion.div
 						initial={{ opacity: 0, y: 50 }}
@@ -167,7 +238,6 @@ export default function Home() {
 						transition={{ duration: 0.8, delay: 0.4 }}
 						className='relative z-10 w-[75%] sm:w-[65%] max-w-[350px] lg:max-w-none lg:w-[85%] xl:w-[70%] 2xl:w-[65%]'
 					>
-						{/* Pink Background Blob */}
 						<div className='absolute top-[10%] right-[5%] w-full aspect-square -z-10 text-brandPink pointer-events-none'>
 							<svg
 								className='w-full h-full transform translate-x-4'
@@ -182,7 +252,6 @@ export default function Home() {
 							</svg>
 						</div>
 
-						{/* Profile Image */}
 						<Image
 							src='/sheremie.png'
 							alt='Sheremie - Virtual Assistant'
@@ -192,7 +261,6 @@ export default function Home() {
 							priority
 						/>
 
-						{/* Top Right Tooltip - Pink */}
 						<motion.div
 							style={{ x: tooltip1X, y: tooltip1Y }}
 							className='absolute right-[2%] md:right-0 lg:right-[-2%] bottom-[45%] md:bottom-[40%] z-30 pointer-events-auto'
@@ -207,7 +275,6 @@ export default function Home() {
 							</motion.div>
 						</motion.div>
 
-						{/* Bottom Left Tooltip - Maroon */}
 						<motion.div
 							style={{ x: tooltip2X, y: tooltip2Y }}
 							className='absolute left-[2%] md:left-0 lg:left-[-4%] bottom-[15%] md:bottom-[20%] z-30 pointer-events-auto'
@@ -224,25 +291,94 @@ export default function Home() {
 					</motion.div>
 				</div>
 
-				{/* --- CUSTOM STRAIGHT DIV BOTTOM --- */}
 				<div className='absolute bottom-0 left-0 w-full h-8 z-30 pointer-events-none flex items-end justify-center'>
-					{/* Maroon Div - Behind, slightly wider, rotated dynamically to peek out */}
 					<div className='absolute w-[110%] h-8 bg-brandMaroon rotate-[-5deg] md:rotate-[-2deg] lg:rotate-[-1.5deg] origin-center'></div>
-
-					{/* Pink Div - In front, completely straight */}
 					<div className='absolute w-full h-8 bg-brandPink'></div>
 				</div>
 			</main>
 
-			{/* Services Section */}
+			{/* --- SERVICES SECTION --- */}
 			<section
+				ref={servicesRef}
 				id='services'
-				className='min-h-screen bg-white flex flex-col items-center justify-center relative z-40 pt-20'
+				className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-24 md:py-32 z-40'
 			>
-				<h2 className='text-4xl text-brandMaroon font-bold mb-4'>My Services</h2>
-				<p className='text-gray-500 max-w-2xl text-center px-6'>
-					This section now seamlessly flows from the landing page. We will build out your grid of services right here!
-				</p>
+				{/* Section Header */}
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: "-100px" }}
+					transition={{ duration: 0.6 }}
+					className='mb-16'
+				>
+					<div className='flex items-center gap-3 mb-4'>
+						<div className='w-6 h-[2px] bg-brandMaroon'></div>
+						<span className='text-gray-800 text-sm font-medium tracking-wide uppercase'>Services</span>
+					</div>
+					<h2 className='text-4xl md:text-5xl font-bold text-gray-900'>
+						<span className='text-brandMaroon italic font-serif'>Services</span> I Provide
+					</h2>
+				</motion.div>
+
+				{/* Services Grid */}
+				<div className='grid grid-cols-1 min-[651px]:grid-cols-2 min-[1001px]:grid-cols-3 gap-6 md:gap-8'>
+					{servicesData.map((service, index) => (
+						<motion.div
+							key={index}
+							animate={{
+								backgroundPosition:
+									index % 2 === 0
+										? ["0% 50%", "100% 100%", "50% 0%", "0% 100%", "100% 0%", "0% 50%"]
+										: ["100% 50%", "0% 0%", "100% 100%", "50% 0%", "0% 100%", "100% 50%"],
+							}}
+							transition={{
+								duration: [13.84, 15.48, 18.99][index],
+								ease: "easeInOut",
+								repeat: Infinity,
+							}}
+							style={{
+								y: cardYTransforms[index],
+								scale: cardScales[index],
+								opacity: cardOpacities[index],
+							}}
+							className={`relative overflow-hidden flex flex-col justify-between rounded-[2rem] p-8 pb-10 md:p-10 md:pb-12 transition-shadow 
+                ${service.glassClass} 
+                ${index === 2 ? "min-[651px]:col-span-2 min-[1001px]:col-span-1" : ""}
+              `}
+						>
+							{/* Top Content (Title, Desc, Bullets) */}
+							<div className='relative z-10'>
+								<h3 className='text-3xl md:text-4xl font-bold text-gray-900 mb-2'>{service.title}</h3>
+								<p className='text-gray-700 text-sm md:text-base font-medium mb-8 leading-snug'>{service.desc}</p>
+
+								<ul className='text-gray-800 space-y-4 md:space-y-5 mb-16'>
+									{service.items.map((item, i) => (
+										<li key={i} className='flex items-start gap-3 font-semibold text-sm md:text-base leading-snug'>
+											<div className='w-1.5 h-1.5 mt-2 rounded-full bg-brandMaroon shrink-0'></div>
+											<span>{item}</span>
+										</li>
+									))}
+								</ul>
+							</div>
+
+							{/* Get Started Button stuck to the bottom */}
+							<button className='w-full relative z-20 bg-brandMaroon hover:bg-[#600f1e] text-white py-3.5 rounded-full font-bold tracking-wider text-sm transition-transform hover:-translate-y-1 shadow-lg'>
+								GET STARTED
+							</button>
+
+							{/* Faint watermark number */}
+							<div className='absolute bottom-4 left-0 w-full flex justify-center translate-y-[10%] select-none pointer-events-none'>
+								<span className='text-[140px] md:text-[160px] font-bold leading-none bg-clip-text text-transparent bg-gradient-to-b from-black/5 to-transparent'>
+									{service.number}
+								</span>
+							</div>
+						</motion.div>
+					))}
+				</div>
+			</section>
+
+			<section id='about' className='h-[70vh] flex flex-col items-center justify-center'>
+				<p className='text-gray-400'>Keep scrolling to see the cards slide up and disappear...</p>
 			</section>
 		</div>
 	);
