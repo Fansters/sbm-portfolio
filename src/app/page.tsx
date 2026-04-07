@@ -18,7 +18,7 @@ const servicesData = [
 		bulletTextClass: "text-gray-800",
 		bulletIconClass: "bg-brandMaroon",
 		btnClass: "bg-brandMaroon hover:bg-[#600f1e] text-white",
-		numberClass: "from-black/5 to-transparent",
+		numberClass: "from-black/10 to-transparent",
 		items: ["Calendar management", "Email organization", "Task tracking", "Basic admin support"],
 	},
 	{
@@ -32,7 +32,7 @@ const servicesData = [
 		bulletTextClass: "text-gray-100",
 		bulletIconClass: "bg-brandPink",
 		btnClass: "bg-white hover:bg-gray-100 text-brandMaroon",
-		numberClass: "from-white/10 to-transparent",
+		numberClass: "from-white/15 to-transparent",
 		items: ["All Essential", "Inbox & communication", "Social media support", "Content posting"],
 	},
 	{
@@ -46,7 +46,7 @@ const servicesData = [
 		bulletTextClass: "text-gray-800",
 		bulletIconClass: "bg-brandMaroon",
 		btnClass: "bg-brandMaroon hover:bg-[#600f1e] text-white",
-		numberClass: "from-black/5 to-transparent",
+		numberClass: "from-black/10 to-transparent",
 		items: ["Customized tasks", "Ongoing admin support", "Priority assistance", "Scalable support"],
 	},
 ];
@@ -82,9 +82,13 @@ const toolsData = [
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isMobile, setIsMobile] = useState(false);
+	const [isPhone, setIsPhone] = useState(false);
 
 	useEffect(() => {
-		const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth < 1024);
+			setIsPhone(window.innerWidth < 768); // Strictly targets smartphones
+		};
 		checkMobile();
 		window.addEventListener("resize", checkMobile);
 		return () => window.removeEventListener("resize", checkMobile);
@@ -249,13 +253,11 @@ export default function Home() {
 							animate={!isLoading ? "visible" : "hidden"}
 							className='flex flex-col gap-4 md:gap-6'
 						>
-							{/* Fixed the Apostrophe to use HTML safe entities */}
 							<p className='text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed max-w-md'>
 								I&apos;m Sheremie, I help you stay organized, manage your tasks, and keep your business running smoothly
 								so you can focus on what matters most.
 							</p>
 
-							{/* Hidden on mobile, visible as block on medium screens and up */}
 							<p className='hidden md:block text-xs md:text-sm text-gray-500 italic'>
 								Currently available for 2-3 new clients
 							</p>
@@ -361,7 +363,22 @@ export default function Home() {
 					{servicesData.map((service, index) => (
 						<motion.div
 							key={index}
-							// Removed BG color animation completely to eliminate mobile scrolling lag
+							// Uses isPhone to pause animation ONLY on smartphones (<768px). iPads & Desktop keep the shine!
+							animate={
+								isPhone
+									? {}
+									: {
+											backgroundPosition:
+												index % 2 === 0
+													? ["0% 50%", "100% 100%", "50% 0%", "0% 100%", "100% 0%", "0% 50%"]
+													: ["100% 50%", "0% 0%", "100% 100%", "50% 0%", "0% 100%", "100% 50%"],
+										}
+							}
+							transition={{
+								duration: [13.84, 15.48, 18.99][index],
+								ease: "easeInOut",
+								repeat: Infinity,
+							}}
 							style={{
 								y: isMobile ? 0 : cardYTransforms[index],
 								scale: isMobile ? 1 : cardScales[index],
@@ -446,11 +463,11 @@ export default function Home() {
 			</section>
 
 			{/* --- NEW: ABOUT ME SECTION --- */}
-			{/* Blended the maroon base color with the prism.svg background pattern */}
+			{/* Updated to use prismMaroon.svg! */}
 			<section
 				id='about'
 				className='relative w-full bg-[#6b1626] overflow-hidden py-24 md:py-32 z-40'
-				style={{ backgroundImage: 'url("/prism.svg")', backgroundRepeat: "repeat" }}
+				style={{ backgroundImage: 'url("/prismMaroon.svg")', backgroundRepeat: "repeat" }}
 			>
 				{/* Subtle Section Header */}
 				<div className='flex justify-center mb-16 md:mb-24'>
@@ -482,7 +499,6 @@ export default function Home() {
 							Who is <span className='text-brandPink italic font-serif'>Sheremie?</span>
 						</h2>
 
-						{/* Fixed Apostrophes here as well */}
 						<p className='text-white/80 text-sm md:text-base leading-relaxed'>
 							I&apos;m Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
 							organized and on track. With experience in admin support, content management, and client coordination, I
