@@ -11,7 +11,6 @@ const servicesData = [
 		number: "01",
 		title: "BASIC",
 		desc: "Best for light tasks and day-to-day assistance",
-		// Restored heavy blur and shadows for all devices
 		glassClass:
 			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-3xl border-[1.5px] border-white/60 shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
 		titleClass: "text-gray-900",
@@ -195,7 +194,6 @@ export default function Home() {
 			<main
 				id='home'
 				onMouseMove={handleMouseMove}
-				// Fixed URL Bar squish: min-h-[100dvh] + increased pt-24 so text never hides behind Navbar
 				className='relative min-h-[100dvh] pt-24 md:pt-32 lg:pt-40 flex items-center px-6 md:px-12 lg:px-24'
 			>
 				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 z-40 relative pb-[200px] md:pb-[260px] lg:pb-0'>
@@ -213,7 +211,6 @@ export default function Home() {
 							))}
 						</motion.h2>
 
-						{/* Adjusted font size for mobile text wrapping */}
 						<motion.h1
 							variants={titleVariants}
 							initial='hidden'
@@ -252,12 +249,16 @@ export default function Home() {
 							animate={!isLoading ? "visible" : "hidden"}
 							className='flex flex-col gap-4 md:gap-6'
 						>
+							{/* Fixed the Apostrophe to use HTML safe entities */}
 							<p className='text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed max-w-md'>
 								I&apos;m Sheremie, I help you stay organized, manage your tasks, and keep your business running smoothly
 								so you can focus on what matters most.
 							</p>
 
-							<p className='text-xs md:text-sm text-gray-500 italic'>Currently available for 2-3 new clients</p>
+							{/* Hidden on mobile, visible as block on medium screens and up */}
+							<p className='hidden md:block text-xs md:text-sm text-gray-500 italic'>
+								Currently available for 2-3 new clients
+							</p>
 
 							<div className='pt-2'>
 								<button className='bg-brandMaroon hover:bg-[#600f1e] text-white px-6 py-3 md:px-8 md:py-3.5 rounded-full text-sm md:text-base font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1'>
@@ -360,19 +361,7 @@ export default function Home() {
 					{servicesData.map((service, index) => (
 						<motion.div
 							key={index}
-							// Animate everywhere!
-							animate={{
-								backgroundPosition:
-									index % 2 === 0
-										? ["0% 50%", "100% 100%", "50% 0%", "0% 100%", "100% 0%", "0% 50%"]
-										: ["100% 50%", "0% 0%", "100% 100%", "50% 0%", "0% 100%", "100% 50%"],
-							}}
-							transition={{
-								duration: [13.84, 15.48, 18.99][index],
-								ease: "easeInOut",
-								repeat: Infinity,
-							}}
-							// Removed Scroll Lag: If mobile, bypass the heavy Scroll Transform!
+							// Removed BG color animation completely to eliminate mobile scrolling lag
 							style={{
 								y: isMobile ? 0 : cardYTransforms[index],
 								scale: isMobile ? 1 : cardScales[index],
@@ -457,7 +446,12 @@ export default function Home() {
 			</section>
 
 			{/* --- NEW: ABOUT ME SECTION --- */}
-			<section id='about' className='relative w-full bg-[#6b1626] overflow-hidden py-24 md:py-32 z-40'>
+			{/* Blended the maroon base color with the prism.svg background pattern */}
+			<section
+				id='about'
+				className='relative w-full bg-[#6b1626] overflow-hidden py-24 md:py-32 z-40'
+				style={{ backgroundImage: 'url("/prism.svg")', backgroundRepeat: "repeat" }}
+			>
 				{/* Subtle Section Header */}
 				<div className='flex justify-center mb-16 md:mb-24'>
 					<div className='flex items-center gap-3'>
@@ -467,46 +461,19 @@ export default function Home() {
 				</div>
 
 				<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center'>
-					{/* LEFT: Image & Spilled Pills */}
-					<div className='relative w-full max-w-sm md:max-w-md mx-auto aspect-square'>
+					{/* LEFT: 3D Pop-Out Image */}
+					<div className='relative w-full max-w-[280px] sm:max-w-sm md:max-w-md mx-auto aspect-square flex items-end justify-center mt-8 lg:mt-0'>
 						{/* The Pink Circle Background */}
-						<div className='absolute inset-0 bg-brandPink rounded-full'></div>
+						<div className='absolute bottom-0 left-0 w-full h-full bg-brandPink rounded-full'></div>
 
-						{/* Sheremie Image positioned inside/bottom of circle */}
+						{/* Sheremie Image positioned inside/bottom of circle and scaling past the top boundary! */}
 						<Image
 							src='/sheremie.png'
 							alt='Sheremie'
 							width={500}
-							height={500}
-							className='relative z-10 w-full h-auto object-cover object-bottom scale-110 translate-y-6'
+							height={600}
+							className='relative z-10 w-[90%] h-auto object-contain object-bottom scale-[1.2] origin-bottom drop-shadow-xl'
 						/>
-
-						{/* The Spilled Floating Pills - Using Percentages & Rotations for perfect responsiveness! */}
-						<div className='absolute z-20 bottom-0 left-0 w-full h-1/2 pointer-events-none'>
-							<div className='absolute bottom-[30%] left-[5%] rotate-[-5deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
-								Flexibility
-							</div>
-
-							<div className='absolute bottom-[20%] right-[15%] rotate-[5deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
-								Growth Mindset
-							</div>
-
-							<div className='absolute bottom-[15%] left-[-5%] rotate-[-10deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
-								Adaptability
-							</div>
-
-							<div className='absolute bottom-[10%] left-[30%] rotate-[-2deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
-								Task Handling
-							</div>
-
-							<div className='absolute bottom-[0%] left-[5%] rotate-[-8deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
-								True Support
-							</div>
-
-							<div className='absolute bottom-[-5%] right-[20%] rotate-[4deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
-								Loyal Assistance
-							</div>
-						</div>
 					</div>
 
 					{/* RIGHT: Text Content */}
@@ -515,16 +482,17 @@ export default function Home() {
 							Who is <span className='text-brandPink italic font-serif'>Sheremie?</span>
 						</h2>
 
+						{/* Fixed Apostrophes here as well */}
 						<p className='text-white/80 text-sm md:text-base leading-relaxed'>
-							I'm Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
+							I&apos;m Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
 							organized and on track. With experience in admin support, content management, and client coordination, I
-							focus on making day-to-day tasks easier and more manageable. I'm detail-oriented, reliable, and committed
-							to delivering support that actually makes a difference.
+							focus on making day-to-day tasks easier and more manageable. I&apos;m detail-oriented, reliable, and
+							committed to delivering support that actually makes a difference.
 						</p>
 
 						<p className='text-white/80 text-sm md:text-base leading-relaxed'>
-							I'm always improving my skills and learning better systems to provide efficient and consistent support for
-							every client I work with. Let's work together and make your workload lighter.
+							I&apos;m always improving my skills and learning better systems to provide efficient and consistent
+							support for every client I work with. Let&apos;s work together and make your workload lighter.
 						</p>
 
 						{/* Quick Stats Row */}
