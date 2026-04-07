@@ -11,9 +11,9 @@ const servicesData = [
 		number: "01",
 		title: "BASIC",
 		desc: "Best for light tasks and day-to-day assistance",
-		// Performance update: Reduced to backdrop-blur-sm on mobile to prevent scrolling lag
+		// Restored heavy blur and shadows for all devices
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-3xl border-[1.5px] border-white/60 shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
 		titleClass: "text-gray-900",
 		descClass: "text-gray-700",
 		bulletTextClass: "text-gray-800",
@@ -27,7 +27,7 @@ const servicesData = [
 		title: "PRO",
 		desc: "For individuals who need consistent, reliable support",
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/99 via-brandMaroon/80 to-brandMaroon/90 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/30 shadow-lg md:shadow-[0_15px_40px_rgba(122,19,39,0.25),inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/99 via-brandMaroon/80 to-brandMaroon/90 backdrop-blur-3xl border-[1.5px] border-white/30 shadow-[0_15px_40px_rgba(122,19,39,0.25),inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.3)]",
 		titleClass: "text-white",
 		descClass: "text-brandPink",
 		bulletTextClass: "text-gray-100",
@@ -41,7 +41,7 @@ const servicesData = [
 		title: "CUSTOM",
 		desc: "Flexible support for your workflow and needs",
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-3xl border-[1.5px] border-white/60 shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
 		titleClass: "text-gray-900",
 		descClass: "text-gray-700",
 		bulletTextClass: "text-gray-800",
@@ -84,7 +84,6 @@ export default function Home() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isMobile, setIsMobile] = useState(false);
 
-	// Responsive check for scroll animation timings
 	useEffect(() => {
 		const checkMobile = () => setIsMobile(window.innerWidth < 1024);
 		checkMobile();
@@ -92,7 +91,6 @@ export default function Home() {
 		return () => window.removeEventListener("resize", checkMobile);
 	}, []);
 
-	// --- MOUSE PARALLAX SETUP (Hero) ---
 	const mouseX = useMotionValue(0);
 	const mouseY = useMotionValue(0);
 	const springConfig = { damping: 25, stiffness: 150 };
@@ -117,7 +115,6 @@ export default function Home() {
 		return () => clearTimeout(timer);
 	}, []);
 
-	// --- SCROLL ANIMATION SETUP (Services) ---
 	const servicesRef = useRef<HTMLElement>(null);
 
 	const { scrollYProgress: servicesScroll } = useScroll({
@@ -137,7 +134,6 @@ export default function Home() {
 	const card2Scale = useTransform(servicesScroll, r2, [0.8, 1, 1, 0.8]);
 	const card3Scale = useTransform(servicesScroll, r3, [0.8, 1, 1, 0.8]);
 
-	// Opacity fades out slightly after movement starts to keep them visible longer
 	const op1 = isMobile ? [0.1, 0.4, 0.9, 0.95] : [0.1, 0.3, 0.75, 0.85];
 	const op2 = isMobile ? [0.15, 0.45, 0.92, 0.98] : [0.15, 0.4, 0.8, 0.9];
 	const op3 = isMobile ? [0.2, 0.5, 0.95, 1.0] : [0.2, 0.5, 0.55, 0.95];
@@ -150,7 +146,6 @@ export default function Home() {
 	const cardScales = [card1Scale, card2Scale, card3Scale];
 	const cardOpacities = [card1Opacity, card2Opacity, card3Opacity];
 
-	// Hero Animation Variants
 	const helloVariants = {
 		hidden: { opacity: 0 },
 		visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.2 } },
@@ -200,9 +195,10 @@ export default function Home() {
 			<main
 				id='home'
 				onMouseMove={handleMouseMove}
-				className='relative min-h-[100svh] pt-12 md:pt-24 lg:pt-32 flex items-center px-6 md:px-12 lg:px-24'
+				// Fixed URL Bar squish: min-h-[100dvh] + increased pt-24 so text never hides behind Navbar
+				className='relative min-h-[100dvh] pt-24 md:pt-32 lg:pt-40 flex items-center px-6 md:px-12 lg:px-24'
 			>
-				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 z-40 relative pb-[260px] lg:pb-0'>
+				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 z-40 relative pb-[200px] md:pb-[260px] lg:pb-0'>
 					<div className='flex flex-col gap-4 md:gap-6 max-w-xl mt-2 md:mt-0'>
 						<motion.h2
 							variants={helloVariants}
@@ -217,11 +213,12 @@ export default function Home() {
 							))}
 						</motion.h2>
 
+						{/* Adjusted font size for mobile text wrapping */}
 						<motion.h1
 							variants={titleVariants}
 							initial='hidden'
 							animate={!isLoading ? "visible" : "hidden"}
-							className='text-4xl md:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight md:leading-tight'
+							className='text-[32px] leading-tight sm:text-4xl md:text-5xl xl:text-6xl font-bold text-gray-900 md:leading-tight'
 						>
 							{"I'm ".split("").map((char, i) => (
 								<motion.span key={`im-${i}`} variants={letterVariants}>
@@ -343,7 +340,6 @@ export default function Home() {
 				id='services'
 				className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-24 md:py-32 z-40'
 			>
-				{/* Section Header */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -360,30 +356,26 @@ export default function Home() {
 					</h2>
 				</motion.div>
 
-				{/* Services Grid */}
 				<div className='grid grid-cols-1 min-[651px]:grid-cols-2 min-[1001px]:grid-cols-3 gap-6 md:gap-8'>
 					{servicesData.map((service, index) => (
 						<motion.div
 							key={index}
-							// Performance update: Pausing gradient animation on mobile to preserve perfectly smooth scrolling
-							animate={
-								isMobile
-									? {}
-									: {
-											backgroundPosition:
-												index % 2 === 0
-													? ["0% 50%", "100% 100%", "50% 0%", "0% 100%", "100% 0%", "0% 50%"]
-													: ["100% 50%", "0% 0%", "100% 100%", "50% 0%", "0% 100%", "100% 50%"],
-										}
-							}
+							// Animate everywhere!
+							animate={{
+								backgroundPosition:
+									index % 2 === 0
+										? ["0% 50%", "100% 100%", "50% 0%", "0% 100%", "100% 0%", "0% 50%"]
+										: ["100% 50%", "0% 0%", "100% 100%", "50% 0%", "0% 100%", "100% 50%"],
+							}}
 							transition={{
 								duration: [13.84, 15.48, 18.99][index],
 								ease: "easeInOut",
 								repeat: Infinity,
 							}}
+							// Removed Scroll Lag: If mobile, bypass the heavy Scroll Transform!
 							style={{
-								y: cardYTransforms[index],
-								scale: cardScales[index],
+								y: isMobile ? 0 : cardYTransforms[index],
+								scale: isMobile ? 1 : cardScales[index],
 								opacity: isMobile ? 1 : cardOpacities[index],
 							}}
 							className={`relative overflow-hidden flex flex-col justify-between rounded-[2rem] p-8 pb-10 md:p-10 md:pb-12 transition-shadow 
@@ -391,7 +383,6 @@ export default function Home() {
                 ${index === 2 ? "min-[651px]:col-span-2 min-[1001px]:col-span-1" : ""}
               `}
 						>
-							{/* Faint watermark number - Centered, enlarged, and perfectly placed behind text */}
 							<div className='absolute inset-0 flex items-center justify-center select-none pointer-events-none z-0'>
 								<span
 									className={`text-[175px] md:text-[200px] font-bold leading-none bg-clip-text text-transparent bg-gradient-to-b ${service.numberClass}`}
@@ -400,7 +391,6 @@ export default function Home() {
 								</span>
 							</div>
 
-							{/* Top Content (Title, Desc, Bullets) */}
 							<div className='relative z-10'>
 								<h3 className={`text-3xl md:text-4xl font-bold mb-2 ${service.titleClass}`}>{service.title}</h3>
 								<p className={`text-sm md:text-base font-medium mb-8 leading-snug ${service.descClass}`}>
@@ -417,7 +407,6 @@ export default function Home() {
 								</ul>
 							</div>
 
-							{/* Get Started Button stuck to the bottom */}
 							<button
 								className={`w-full relative z-20 py-3.5 rounded-full font-bold tracking-wider text-sm transition-transform hover:-translate-y-1 shadow-lg ${service.btnClass}`}
 							>
@@ -430,7 +419,6 @@ export default function Home() {
 
 			{/* --- TOOLS SECTION --- */}
 			<section id='tools' className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-16 md:py-24 z-40'>
-				{/* Section Header - Left Aligned to match Services */}
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -447,7 +435,6 @@ export default function Home() {
 					</h2>
 				</motion.div>
 
-				{/* Tools Grid - Updated to lg:grid-cols-8 to hold all 24 items in a 3x8 layout */}
 				<div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-y-10 gap-x-4 md:gap-x-6 justify-items-center'>
 					{toolsData.map((tool, index) => (
 						<motion.div
@@ -458,7 +445,6 @@ export default function Home() {
 							transition={{ duration: 0.4, delay: index * 0.05 }}
 							className='flex flex-col items-center gap-4 group'
 						>
-							{/* Circular Shadowed Container - Removed cursor-pointer */}
 							<div className='w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.1)] flex items-center justify-center p-4 transition-transform duration-300 group-hover:-translate-y-2'>
 								<div className='w-full h-full bg-white rounded-full flex items-center justify-center text-gray-300 text-xs text-center leading-none'>
 									<Image src={tool.icon} alt={tool.name} width={60} height={60} className='object-contain' />
@@ -470,7 +456,101 @@ export default function Home() {
 				</div>
 			</section>
 
-			<section id='about' className='h-[20vh]'></section>
+			{/* --- NEW: ABOUT ME SECTION --- */}
+			<section id='about' className='relative w-full bg-[#6b1626] overflow-hidden py-24 md:py-32 z-40'>
+				{/* Subtle Section Header */}
+				<div className='flex justify-center mb-16 md:mb-24'>
+					<div className='flex items-center gap-3'>
+						<div className='w-6 h-[1px] bg-white/60'></div>
+						<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>About Me</span>
+					</div>
+				</div>
+
+				<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center'>
+					{/* LEFT: Image & Spilled Pills */}
+					<div className='relative w-full max-w-sm md:max-w-md mx-auto aspect-square'>
+						{/* The Pink Circle Background */}
+						<div className='absolute inset-0 bg-brandPink rounded-full'></div>
+
+						{/* Sheremie Image positioned inside/bottom of circle */}
+						<Image
+							src='/sheremie.png'
+							alt='Sheremie'
+							width={500}
+							height={500}
+							className='relative z-10 w-full h-auto object-cover object-bottom scale-110 translate-y-6'
+						/>
+
+						{/* The Spilled Floating Pills - Using Percentages & Rotations for perfect responsiveness! */}
+						<div className='absolute z-20 bottom-0 left-0 w-full h-1/2 pointer-events-none'>
+							<div className='absolute bottom-[30%] left-[5%] rotate-[-5deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
+								Flexibility
+							</div>
+
+							<div className='absolute bottom-[20%] right-[15%] rotate-[5deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
+								Growth Mindset
+							</div>
+
+							<div className='absolute bottom-[15%] left-[-5%] rotate-[-10deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
+								Adaptability
+							</div>
+
+							<div className='absolute bottom-[10%] left-[30%] rotate-[-2deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
+								Task Handling
+							</div>
+
+							<div className='absolute bottom-[0%] left-[5%] rotate-[-8deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
+								True Support
+							</div>
+
+							<div className='absolute bottom-[-5%] right-[20%] rotate-[4deg] bg-brandMaroon border border-white text-white text-[10px] md:text-xs font-semibold px-4 py-1.5 rounded-full shadow-lg'>
+								Loyal Assistance
+							</div>
+						</div>
+					</div>
+
+					{/* RIGHT: Text Content */}
+					<div className='flex flex-col gap-6 text-white'>
+						<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
+							Who is <span className='text-brandPink italic font-serif'>Sheremie?</span>
+						</h2>
+
+						<p className='text-white/80 text-sm md:text-base leading-relaxed'>
+							I'm Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
+							organized and on track. With experience in admin support, content management, and client coordination, I
+							focus on making day-to-day tasks easier and more manageable. I'm detail-oriented, reliable, and committed
+							to delivering support that actually makes a difference.
+						</p>
+
+						<p className='text-white/80 text-sm md:text-base leading-relaxed'>
+							I'm always improving my skills and learning better systems to provide efficient and consistent support for
+							every client I work with. Let's work together and make your workload lighter.
+						</p>
+
+						{/* Quick Stats Row */}
+						<div className='grid grid-cols-3 gap-4 my-4'>
+							<div>
+								<h4 className='text-3xl md:text-4xl font-bold mb-1'>400+</h4>
+								<p className='text-white/70 text-xs md:text-sm'>Projects Completed</p>
+							</div>
+							<div>
+								<h4 className='text-3xl md:text-4xl font-bold mb-1'>10+</h4>
+								<p className='text-white/70 text-xs md:text-sm'>Industry Serves</p>
+							</div>
+							<div>
+								<h4 className='text-3xl md:text-4xl font-bold mb-1'>2+</h4>
+								<p className='text-white/70 text-xs md:text-sm'>Years of Experience</p>
+							</div>
+						</div>
+
+						<div className='pt-4'>
+							<button className='bg-brandPink hover:bg-[#c27c8f] text-white px-8 py-3.5 rounded-full text-sm font-bold transition-all shadow-lg hover:-translate-y-1'>
+								Work With Me
+							</button>
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 }
