@@ -11,17 +11,28 @@ const servicesData = [
 		number: "01",
 		title: "BASIC",
 		desc: "Best for light tasks and day-to-day assistance",
-		// To change colors manually, edit the "from-...", "via-...", and "to-..." classes below!
+		// Performance update: Uses lighter blur and shadow on mobile, scales to heavy glass on md:
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-3xl border-[1.5px] border-white/60 shadow-[0_15px_40px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.8),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-md md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+		titleClass: "text-gray-900",
+		descClass: "text-gray-700",
+		bulletTextClass: "text-gray-800",
+		bulletIconClass: "bg-brandMaroon",
+		btnClass: "bg-brandMaroon hover:bg-[#600f1e] text-white",
 		items: ["Calendar management", "Email organization", "Task tracking", "Basic admin support"],
 	},
 	{
 		number: "02",
 		title: "PRO",
 		desc: "For individuals who need consistent, reliable support",
+		// Middle card flipped! Dark maroon glass with white/pink gloss
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/20 via-brandPink/20 to-brandMaroon/10 backdrop-blur-3xl border-[1.5px] border-white/50 shadow-[0_15px_40px_rgba(122,19,39,0.15),inset_0_2px_4px_rgba(255,255,255,0.7),inset_0_-2px_4px_rgba(255,255,255,0.2)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/99 via-brandMaroon/80 to-brandMaroon/90 backdrop-blur-md md:backdrop-blur-3xl border-[1.5px] border-white/30 shadow-lg md:shadow-[0_15px_40px_rgba(122,19,39,0.25),inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.3)]",
+		titleClass: "text-white",
+		descClass: "text-brandPink",
+		bulletTextClass: "text-gray-100",
+		bulletIconClass: "bg-brandPink",
+		btnClass: "bg-white hover:bg-gray-100 text-brandMaroon",
 		items: ["All Essential", "Inbox & communication", "Social media support", "Content posting"],
 	},
 	{
@@ -29,7 +40,12 @@ const servicesData = [
 		title: "CUSTOM",
 		desc: "Flexible support for your workflow and needs",
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-3xl border-[1.5px] border-white/60 shadow-[0_15px_40px_rgba(0,0,0,0.1),inset_0_2px_4px_rgba(255,255,255,0.8),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-md md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+		titleClass: "text-gray-900",
+		descClass: "text-gray-700",
+		bulletTextClass: "text-gray-800",
+		bulletIconClass: "bg-brandMaroon",
+		btnClass: "bg-brandMaroon hover:bg-[#600f1e] text-white",
 		items: ["Customized tasks", "Ongoing admin support", "Priority assistance", "Scalable support"],
 	},
 ];
@@ -82,9 +98,9 @@ export default function Home() {
 	// RESPONSIVE & STAGGERED TIMING ARRAYS
 	// Desktop: Exits start at 0.70 and stagger (Card 1 leaves first, then Card 2, then Card 3)
 	// Mobile: Exits start at 0.85 and stagger, finishing exactly at 1.0
-	const r1 = isMobile ? [0.02, 0.2, 0.6, 0.99] : [0.0, 0.35, 0.6, 0.99];
-	const r2 = isMobile ? [0.04, 0.3, 0.7, 0.99] : [0.0, 0.38, 0.6, 0.99];
-	const r3 = isMobile ? [0.07, 0.4, 0.88, 1.0] : [0.0, 0.42, 0.6, 0.99];
+	const r1 = isMobile ? [0.02, 0.2, 0.6, 0.99] : [0.0, 0.3, 0.7, 0.96];
+	const r2 = isMobile ? [0.04, 0.3, 0.7, 0.99] : [0.0, 0.35, 0.72, 0.98];
+	const r3 = isMobile ? [0.07, 0.4, 0.88, 1.0] : [0.0, 0.38, 0.75, 1.0];
 
 	// Apply the dynamic ranges to the transforms
 	// Removed the X-axis transforms entirely so they only move vertically
@@ -97,9 +113,9 @@ export default function Home() {
 	const card3Scale = useTransform(servicesScroll, r3, [0.8, 1, 1, 0.8]);
 
 	// Opacity fades out slightly after movement starts to keep them visible longer
-	const op1 = isMobile ? [0.1, 0.4, 0.9, 0.95] : [0.1, 0.4, 0.75, 0.85];
-	const op2 = isMobile ? [0.15, 0.45, 0.92, 0.98] : [0.15, 0.45, 0.8, 0.9];
-	const op3 = isMobile ? [0.2, 0.5, 0.95, 1.0] : [0.2, 0.5, 0.85, 0.95];
+	const op1 = isMobile ? [0.1, 0.4, 0.9, 0.95] : [0.1, 0.3, 0.75, 0.85];
+	const op2 = isMobile ? [0.15, 0.45, 0.92, 0.98] : [0.15, 0.4, 0.8, 0.9];
+	const op3 = isMobile ? [0.2, 0.5, 0.95, 1.0] : [0.2, 0.5, 0.55, 0.95];
 
 	const card1Opacity = useTransform(servicesScroll, op1, [0, 1, 1, 0]);
 	const card2Opacity = useTransform(servicesScroll, op2, [0, 1, 1, 0]);
@@ -316,7 +332,8 @@ export default function Home() {
 						<span className='text-gray-800 text-sm font-medium tracking-wide uppercase'>Services</span>
 					</div>
 					<h2 className='text-4xl md:text-5xl font-bold text-gray-900'>
-						<span className='text-brandMaroon italic font-serif'>Services</span> I Provide
+						{/* Removed font-serif so it inherits the global Montserrat font! */}
+						<span className='text-brandMaroon italic'>Services</span> I Provide
 					</h2>
 				</motion.div>
 
@@ -339,7 +356,8 @@ export default function Home() {
 							style={{
 								y: cardYTransforms[index],
 								scale: cardScales[index],
-								opacity: cardOpacities[index],
+								// On mobile, force opacity to 1 to remove the fade. On desktop, keep the animation!
+								opacity: isMobile ? 1 : cardOpacities[index],
 							}}
 							className={`relative overflow-hidden flex flex-col justify-between rounded-[2rem] p-8 pb-10 md:p-10 md:pb-12 transition-shadow 
                 ${service.glassClass} 
@@ -348,13 +366,16 @@ export default function Home() {
 						>
 							{/* Top Content (Title, Desc, Bullets) */}
 							<div className='relative z-10'>
-								<h3 className='text-3xl md:text-4xl font-bold text-gray-900 mb-2'>{service.title}</h3>
-								<p className='text-gray-700 text-sm md:text-base font-medium mb-8 leading-snug'>{service.desc}</p>
+								{/* Implemented dynamic text colors based on the array object */}
+								<h3 className={`text-3xl md:text-4xl font-bold mb-2 ${service.titleClass}`}>{service.title}</h3>
+								<p className={`text-sm md:text-base font-medium mb-8 leading-snug ${service.descClass}`}>
+									{service.desc}
+								</p>
 
-								<ul className='text-gray-800 space-y-4 md:space-y-5 mb-16'>
+								<ul className={`space-y-4 md:space-y-5 mb-16 ${service.bulletTextClass}`}>
 									{service.items.map((item, i) => (
 										<li key={i} className='flex items-start gap-3 font-semibold text-sm md:text-base leading-snug'>
-											<div className='w-1.5 h-1.5 mt-2 rounded-full bg-brandMaroon shrink-0'></div>
+											<div className={`w-1.5 h-1.5 mt-2 rounded-full shrink-0 ${service.bulletIconClass}`}></div>
 											<span>{item}</span>
 										</li>
 									))}
@@ -362,7 +383,9 @@ export default function Home() {
 							</div>
 
 							{/* Get Started Button stuck to the bottom */}
-							<button className='w-full relative z-20 bg-brandMaroon hover:bg-[#600f1e] text-white py-3.5 rounded-full font-bold tracking-wider text-sm transition-transform hover:-translate-y-1 shadow-lg'>
+							<button
+								className={`w-full relative z-20 py-3.5 rounded-full font-bold tracking-wider text-sm transition-transform hover:-translate-y-1 shadow-lg ${service.btnClass}`}
+							>
 								GET STARTED
 							</button>
 
