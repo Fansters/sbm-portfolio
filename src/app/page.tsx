@@ -11,28 +11,29 @@ const servicesData = [
 		number: "01",
 		title: "BASIC",
 		desc: "Best for light tasks and day-to-day assistance",
-		// Performance update: Uses lighter blur and shadow on mobile, scales to heavy glass on md:
+		// Performance update: Reduced to backdrop-blur-sm on mobile to prevent scrolling lag
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-md md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
 		titleClass: "text-gray-900",
 		descClass: "text-gray-700",
 		bulletTextClass: "text-gray-800",
 		bulletIconClass: "bg-brandMaroon",
 		btnClass: "bg-brandMaroon hover:bg-[#600f1e] text-white",
+		numberClass: "from-black/5 to-transparent",
 		items: ["Calendar management", "Email organization", "Task tracking", "Basic admin support"],
 	},
 	{
 		number: "02",
 		title: "PRO",
 		desc: "For individuals who need consistent, reliable support",
-		// Middle card flipped! Dark maroon glass with white/pink gloss
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/99 via-brandMaroon/80 to-brandMaroon/90 backdrop-blur-md md:backdrop-blur-3xl border-[1.5px] border-white/30 shadow-lg md:shadow-[0_15px_40px_rgba(122,19,39,0.25),inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/99 via-brandMaroon/80 to-brandMaroon/90 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/30 shadow-lg md:shadow-[0_15px_40px_rgba(122,19,39,0.25),inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.3)]",
 		titleClass: "text-white",
 		descClass: "text-brandPink",
 		bulletTextClass: "text-gray-100",
 		bulletIconClass: "bg-brandPink",
 		btnClass: "bg-white hover:bg-gray-100 text-brandMaroon",
+		numberClass: "from-white/10 to-transparent",
 		items: ["All Essential", "Inbox & communication", "Social media support", "Content posting"],
 	},
 	{
@@ -40,14 +41,43 @@ const servicesData = [
 		title: "CUSTOM",
 		desc: "Flexible support for your workflow and needs",
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-md md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
 		titleClass: "text-gray-900",
 		descClass: "text-gray-700",
 		bulletTextClass: "text-gray-800",
 		bulletIconClass: "bg-brandMaroon",
 		btnClass: "bg-brandMaroon hover:bg-[#600f1e] text-white",
+		numberClass: "from-black/5 to-transparent",
 		items: ["Customized tasks", "Ongoing admin support", "Priority assistance", "Scalable support"],
 	},
+];
+
+// --- DATA FOR TOOLS SECTION ---
+const toolsData = [
+	{ name: "Instagram", icon: "/tools/instagram.svg" },
+	{ name: "TikTok", icon: "/tools/tiktok.svg" },
+	{ name: "Meta Suite", icon: "/tools/meta.svg" },
+	{ name: "WhatsApp", icon: "/tools/whatsapp.svg" },
+	{ name: "Canva", icon: "/tools/canva.svg" },
+	{ name: "CapCut", icon: "/tools/capcut.svg" },
+	{ name: "Slack", icon: "/tools/slack.svg" },
+	{ name: "Drive", icon: "/tools/drive.svg" },
+	{ name: "Gmail", icon: "/tools/gmail.svg" },
+	{ name: "Docs", icon: "/tools/docs.svg" },
+	{ name: "Sheets", icon: "/tools/sheets.svg" },
+	{ name: "Excel", icon: "/tools/excel.svg" },
+	{ name: "Calendar", icon: "/tools/calendar.svg" },
+	{ name: "Pinterest", icon: "/tools/pinterest.svg" },
+	{ name: "Airtable", icon: "/tools/airtable.svg" },
+	{ name: "Notion", icon: "/tools/notion.svg" },
+	{ name: "Trello", icon: "/tools/trello.svg" },
+	{ name: "Asana", icon: "/tools/asana.svg" },
+	{ name: "Zoom", icon: "/tools/zoom.svg" },
+	{ name: "Teams", icon: "/tools/teams.svg" },
+	{ name: "Meet", icon: "/tools/meet.svg" },
+	{ name: "Gemini", icon: "/tools/gemini.svg" },
+	{ name: "ChatGPT", icon: "/tools/chatgpt.svg" },
+	{ name: "Zapier", icon: "/tools/zapier.svg" },
 ];
 
 export default function Home() {
@@ -57,7 +87,7 @@ export default function Home() {
 	// Responsive check for scroll animation timings
 	useEffect(() => {
 		const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-		checkMobile(); // Check immediately on mount
+		checkMobile();
 		window.addEventListener("resize", checkMobile);
 		return () => window.removeEventListener("resize", checkMobile);
 	}, []);
@@ -95,15 +125,10 @@ export default function Home() {
 		offset: ["start end", "end start"],
 	});
 
-	// RESPONSIVE & STAGGERED TIMING ARRAYS
-	// Desktop: Exits start at 0.70 and stagger (Card 1 leaves first, then Card 2, then Card 3)
-	// Mobile: Exits start at 0.85 and stagger, finishing exactly at 1.0
 	const r1 = isMobile ? [0.02, 0.2, 0.6, 0.99] : [0.0, 0.3, 0.7, 0.96];
 	const r2 = isMobile ? [0.04, 0.3, 0.7, 0.99] : [0.0, 0.35, 0.72, 0.98];
 	const r3 = isMobile ? [0.07, 0.4, 0.88, 1.0] : [0.0, 0.38, 0.75, 1.0];
 
-	// Apply the dynamic ranges to the transforms
-	// Removed the X-axis transforms entirely so they only move vertically
 	const card1Y = useTransform(servicesScroll, r1, [400, 0, 0, -400]);
 	const card2Y = useTransform(servicesScroll, r2, [400, 0, 0, -500]);
 	const card3Y = useTransform(servicesScroll, r3, [400, 0, 0, -400]);
@@ -121,7 +146,6 @@ export default function Home() {
 	const card2Opacity = useTransform(servicesScroll, op2, [0, 1, 1, 0]);
 	const card3Opacity = useTransform(servicesScroll, op3, [0, 1, 1, 0]);
 
-	// Grouping them into arrays so we can easily map them in the JSX
 	const cardYTransforms = [card1Y, card2Y, card3Y];
 	const cardScales = [card1Scale, card2Scale, card3Scale];
 	const cardOpacities = [card1Opacity, card2Opacity, card3Opacity];
@@ -332,7 +356,6 @@ export default function Home() {
 						<span className='text-gray-800 text-sm font-medium tracking-wide uppercase'>Services</span>
 					</div>
 					<h2 className='text-4xl md:text-5xl font-bold text-gray-900'>
-						{/* Removed font-serif so it inherits the global Montserrat font! */}
 						<span className='text-brandMaroon italic'>Services</span> I Provide
 					</h2>
 				</motion.div>
@@ -342,12 +365,17 @@ export default function Home() {
 					{servicesData.map((service, index) => (
 						<motion.div
 							key={index}
-							animate={{
-								backgroundPosition:
-									index % 2 === 0
-										? ["0% 50%", "100% 100%", "50% 0%", "0% 100%", "100% 0%", "0% 50%"]
-										: ["100% 50%", "0% 0%", "100% 100%", "50% 0%", "0% 100%", "100% 50%"],
-							}}
+							// Performance update: Pausing gradient animation on mobile to preserve perfectly smooth scrolling
+							animate={
+								isMobile
+									? {}
+									: {
+											backgroundPosition:
+												index % 2 === 0
+													? ["0% 50%", "100% 100%", "50% 0%", "0% 100%", "100% 0%", "0% 50%"]
+													: ["100% 50%", "0% 0%", "100% 100%", "50% 0%", "0% 100%", "100% 50%"],
+										}
+							}
 							transition={{
 								duration: [13.84, 15.48, 18.99][index],
 								ease: "easeInOut",
@@ -356,7 +384,6 @@ export default function Home() {
 							style={{
 								y: cardYTransforms[index],
 								scale: cardScales[index],
-								// On mobile, force opacity to 1 to remove the fade. On desktop, keep the animation!
 								opacity: isMobile ? 1 : cardOpacities[index],
 							}}
 							className={`relative overflow-hidden flex flex-col justify-between rounded-[2rem] p-8 pb-10 md:p-10 md:pb-12 transition-shadow 
@@ -364,9 +391,17 @@ export default function Home() {
                 ${index === 2 ? "min-[651px]:col-span-2 min-[1001px]:col-span-1" : ""}
               `}
 						>
+							{/* Faint watermark number - Centered, enlarged, and perfectly placed behind text */}
+							<div className='absolute inset-0 flex items-center justify-center select-none pointer-events-none z-0'>
+								<span
+									className={`text-[175px] md:text-[200px] font-bold leading-none bg-clip-text text-transparent bg-gradient-to-b ${service.numberClass}`}
+								>
+									{service.number}
+								</span>
+							</div>
+
 							{/* Top Content (Title, Desc, Bullets) */}
 							<div className='relative z-10'>
-								{/* Implemented dynamic text colors based on the array object */}
 								<h3 className={`text-3xl md:text-4xl font-bold mb-2 ${service.titleClass}`}>{service.title}</h3>
 								<p className={`text-sm md:text-base font-medium mb-8 leading-snug ${service.descClass}`}>
 									{service.desc}
@@ -388,21 +423,54 @@ export default function Home() {
 							>
 								GET STARTED
 							</button>
-
-							{/* Faint watermark number */}
-							<div className='absolute bottom-4 left-0 w-full flex justify-center translate-y-[10%] select-none pointer-events-none'>
-								<span className='text-[140px] md:text-[160px] font-bold leading-none bg-clip-text text-transparent bg-gradient-to-b from-black/5 to-transparent'>
-									{service.number}
-								</span>
-							</div>
 						</motion.div>
 					))}
 				</div>
 			</section>
 
-			<section id='about' className='h-[70vh] flex flex-col items-center justify-center'>
-				<p className='text-gray-400'>Keep scrolling to see the cards slide up and disappear...</p>
+			{/* --- TOOLS SECTION --- */}
+			<section id='tools' className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-16 md:py-24 z-40'>
+				{/* Section Header - Left Aligned to match Services */}
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: "-50px" }}
+					transition={{ duration: 0.6 }}
+					className='mb-16'
+				>
+					<div className='flex items-center gap-3 mb-4'>
+						<div className='w-6 h-[2px] bg-brandMaroon'></div>
+						<span className='text-gray-800 text-sm font-medium tracking-wide uppercase'>My Favorite Tools</span>
+					</div>
+					<h2 className='text-4xl md:text-5xl font-bold text-gray-900'>
+						<span className='text-brandMaroon italic'>Tools</span> I Use
+					</h2>
+				</motion.div>
+
+				{/* Tools Grid - Updated to lg:grid-cols-8 to hold all 24 items in a 3x8 layout */}
+				<div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-y-10 gap-x-4 md:gap-x-6 justify-items-center'>
+					{toolsData.map((tool, index) => (
+						<motion.div
+							key={index}
+							initial={{ opacity: 0, scale: 0.8 }}
+							whileInView={{ opacity: 1, scale: 1 }}
+							viewport={{ once: true, margin: "-50px" }}
+							transition={{ duration: 0.4, delay: index * 0.05 }}
+							className='flex flex-col items-center gap-4 group'
+						>
+							{/* Circular Shadowed Container - Removed cursor-pointer */}
+							<div className='w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.1)] flex items-center justify-center p-4 transition-transform duration-300 group-hover:-translate-y-2'>
+								<div className='w-full h-full bg-white rounded-full flex items-center justify-center text-gray-300 text-xs text-center leading-none'>
+									<Image src={tool.icon} alt={tool.name} width={60} height={60} className='object-contain' />
+								</div>
+							</div>
+							<span className='text-xs md:text-sm font-bold text-gray-800 text-center'>{tool.name}</span>
+						</motion.div>
+					))}
+				</div>
 			</section>
+
+			<section id='about' className='h-[20vh]'></section>
 		</div>
 	);
 }
