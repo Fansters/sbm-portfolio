@@ -4,6 +4,7 @@ import Navbar from "@/app/components/Navbar";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import { GraduationCap, Briefcase } from "lucide-react"; // Imported new icons for the timeline!
 
 // --- DATA FOR SERVICES SECTION ---
 const servicesData = [
@@ -12,7 +13,7 @@ const servicesData = [
 		title: "BASIC",
 		desc: "Best for light tasks and day-to-day assistance",
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-3xl border-[1.5px] border-white/60 shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
 		titleClass: "text-gray-900",
 		descClass: "text-gray-700",
 		bulletTextClass: "text-gray-800",
@@ -26,7 +27,7 @@ const servicesData = [
 		title: "PRO",
 		desc: "For individuals who need consistent, reliable support",
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/99 via-brandMaroon/80 to-brandMaroon/90 backdrop-blur-3xl border-[1.5px] border-white/30 shadow-[0_15px_40px_rgba(122,19,39,0.25),inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/99 via-brandMaroon/80 to-brandMaroon/90 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/30 shadow-lg md:shadow-[0_15px_40px_rgba(122,19,39,0.25),inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.3)]",
 		titleClass: "text-white",
 		descClass: "text-brandPink",
 		bulletTextClass: "text-gray-100",
@@ -40,7 +41,7 @@ const servicesData = [
 		title: "CUSTOM",
 		desc: "Flexible support for your workflow and needs",
 		glassClass:
-			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-3xl border-[1.5px] border-white/60 shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
+			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
 		titleClass: "text-gray-900",
 		descClass: "text-gray-700",
 		bulletTextClass: "text-gray-800",
@@ -79,6 +80,27 @@ const toolsData = [
 	{ name: "Zapier", icon: "/tools/zapier.svg" },
 ];
 
+// --- DATA FOR EDUCATION & WORK SECTION ---
+const educationData = [
+	{
+		date: "2022-2026",
+		title: "Bulacan State University",
+		desc: "BS in Business Administration\nMajor in Marketing Management",
+	},
+	{
+		date: "2020-2022",
+		title: "Mary and Jesus School Inc.",
+		desc: "Accountancy, Business, and\nManagement (ABM) Senior High School",
+	},
+	{ date: "2016-2020", title: "Mary and Jesus School Inc.", desc: "Junior High School" },
+];
+
+const workData = [
+	{ date: "Jun 2025 - Mar 2026", title: "Virtual Assistant", desc: "Win with Barlow | EZMobileDNA" },
+	{ date: "Feb 2025 - Mar 2026", title: "Content Manager", desc: "Mascon Tech | Seartify" },
+	{ date: "Oct 2024 - Jan 2025", title: "Social Media Manager", desc: "LW Business Innovations" },
+];
+
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isMobile, setIsMobile] = useState(false);
@@ -87,7 +109,7 @@ export default function Home() {
 	useEffect(() => {
 		const checkMobile = () => {
 			setIsMobile(window.innerWidth < 1024);
-			setIsPhone(window.innerWidth < 768); // Strictly targets smartphones
+			setIsPhone(window.innerWidth < 768);
 		};
 		checkMobile();
 		window.addEventListener("resize", checkMobile);
@@ -148,6 +170,20 @@ export default function Home() {
 	const cardYTransforms = [card1Y, card2Y, card3Y];
 	const cardScales = [card1Scale, card2Scale, card3Scale];
 	const cardOpacities = [card1Opacity, card2Opacity, card3Opacity];
+
+	// --- SCROLL ANIMATION SETUP (Experience) ---
+	const experienceRef = useRef<HTMLElement>(null);
+
+	const { scrollYProgress: expScroll } = useScroll({
+		target: experienceRef,
+		offset: ["start end", "end start"],
+	});
+
+	// Enter completes at 0.45 (centered), hold until 0.55 (half visible past center), then exit
+	const expCard1X = useTransform(expScroll, [0.1, 0.45, 0.55, 0.9], [-400, 0, 0, -400]);
+	const expCard2X = useTransform(expScroll, [0.1, 0.45, 0.55, 0.9], [400, 0, 0, 400]);
+	const expScale = useTransform(expScroll, [0.1, 0.45, 0.55, 0.9], [0.8, 1, 1, 0.8]);
+	const expOpacity = useTransform(expScroll, [0.1, 0.4, 0.6, 0.9], [0, 1, 1, 0]);
 
 	const helloVariants = {
 		hidden: { opacity: 0 },
@@ -363,7 +399,6 @@ export default function Home() {
 					{servicesData.map((service, index) => (
 						<motion.div
 							key={index}
-							// Uses isPhone to pause animation ONLY on smartphones (<768px). iPads & Desktop keep the shine!
 							animate={
 								isPhone
 									? {}
@@ -424,7 +459,10 @@ export default function Home() {
 			</section>
 
 			{/* --- TOOLS SECTION --- */}
-			<section id='tools' className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-16 md:py-24 z-40'>
+			<section
+				id='tools'
+				className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pt-16 pb-32 md:pt-24 md:pb-48 z-40'
+			>
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -462,79 +500,168 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* --- NEW: ABOUT ME SECTION --- */}
-			{/* Updated to use prismMaroon.svg! */}
-			<section
-				id='about'
-				className='relative w-full bg-[#6b1626] overflow-hidden py-24 md:py-32 z-40'
+			{/* --- WRAPPER FOR MAROON BACKGROUND --- */}
+			<div
+				className='relative w-full bg-[#6b1626] overflow-hidden z-40'
 				style={{ backgroundImage: 'url("/prismMaroon.svg")', backgroundRepeat: "repeat" }}
 			>
-				{/* Subtle Section Header */}
-				<div className='flex justify-center mb-16 md:mb-24'>
-					<div className='flex items-center gap-3'>
-						<div className='w-6 h-[1px] bg-white/60'></div>
-						<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>About Me</span>
-					</div>
-				</div>
-
-				<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center'>
-					{/* LEFT: 3D Pop-Out Image */}
-					<div className='relative w-full max-w-[280px] sm:max-w-sm md:max-w-md mx-auto aspect-square flex items-end justify-center mt-8 lg:mt-0'>
-						{/* The Pink Circle Background */}
-						<div className='absolute bottom-0 left-0 w-full h-full bg-brandPink rounded-full'></div>
-
-						{/* Sheremie Image positioned inside/bottom of circle and scaling past the top boundary! */}
-						<Image
-							src='/sheremie.png'
-							alt='Sheremie'
-							width={500}
-							height={600}
-							className='relative z-10 w-[90%] h-auto object-contain object-bottom scale-[1.2] origin-bottom drop-shadow-xl'
-						/>
+				{/* --- ABOUT ME SECTION --- */}
+				<section id='about' className='py-24 md:py-32'>
+					<div className='flex justify-center mb-16 md:mb-24'>
+						<div className='flex items-center gap-3'>
+							<div className='w-6 h-[1px] bg-white/60'></div>
+							<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>About Me</span>
+						</div>
 					</div>
 
-					{/* RIGHT: Text Content */}
-					<div className='flex flex-col gap-6 text-white'>
-						<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
-							Who is <span className='text-brandPink italic font-serif'>Sheremie?</span>
+					<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center'>
+						{/* LEFT: Image Container without pink circle */}
+						<div className='relative w-full max-w-[280px] sm:max-w-sm md:max-w-md mx-auto flex items-end justify-center mt-8 lg:mt-0'>
+							{/* Image without pink circle background, using SherAboutMe */}
+							<Image
+								src='/sherAboutMe.png'
+								alt='Sheremie'
+								width={500}
+								height={600}
+								className='relative z-10 w-[90%] h-auto object-contain object-bottom drop-shadow-xl'
+							/>
+						</div>
+
+						{/* RIGHT: Text Content */}
+						<div className='flex flex-col gap-6 text-white'>
+							<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
+								Who is <span className='text-brandPink italic'>Sheremie?</span>
+							</h2>
+
+							<p className='text-white/80 text-sm md:text-base leading-relaxed'>
+								I&apos;m Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
+								organized and on track. With experience in admin support, content management, and client coordination, I
+								focus on making day-to-day tasks easier and more manageable. I&apos;m detail-oriented, reliable, and
+								committed to delivering support that actually makes a difference.
+							</p>
+
+							<p className='text-white/80 text-sm md:text-base leading-relaxed'>
+								I&apos;m always improving my skills and learning better systems to provide efficient and consistent
+								support for every client I work with. Let&apos;s work together and make your workload lighter.
+							</p>
+
+							{/* Quick Stats Row */}
+							<div className='grid grid-cols-3 gap-4 my-4'>
+								<div>
+									<h4 className='text-3xl md:text-4xl font-bold mb-1'>400+</h4>
+									<p className='text-white/70 text-xs md:text-sm'>Projects Completed</p>
+								</div>
+								<div>
+									<h4 className='text-3xl md:text-4xl font-bold mb-1'>10+</h4>
+									<p className='text-white/70 text-xs md:text-sm'>Industry Serves</p>
+								</div>
+								<div>
+									<h4 className='text-3xl md:text-4xl font-bold mb-1'>2+</h4>
+									<p className='text-white/70 text-xs md:text-sm'>Years of Experience</p>
+								</div>
+							</div>
+
+							<div className='pt-4'>
+								<button className='bg-white hover:bg-gray-100 text-brandMaroon px-8 py-3.5 rounded-full text-sm font-bold transition-all shadow-lg hover:-translate-y-1'>
+									Work With Me
+								</button>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				{/* --- NEW: EDUCATION & WORK EXPERIENCE SECTION --- */}
+				<section ref={experienceRef} id='experience' className='pt-24 md:pt-32 pb-24 md:pb-32'>
+					{/* Subtle Section Header */}
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-50px" }}
+						transition={{ duration: 0.6 }}
+						className='flex flex-col items-center mb-16 md:mb-20'
+					>
+						<div className='flex items-center gap-3 mb-4'>
+							<div className='w-6 h-[1px] bg-white/60'></div>
+							<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>Education & Work</span>
+							<div className='w-6 h-[1px] bg-white/60'></div>
+						</div>
+						<h2 className='text-3xl md:text-5xl font-bold text-white text-center leading-tight'>
+							My <span className='italic text-brandPink'>Academic and</span>
+							<br /> <span className='italic text-brandPink'>Professional</span> Journey
 						</h2>
+					</motion.div>
 
-						<p className='text-white/80 text-sm md:text-base leading-relaxed'>
-							I&apos;m Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
-							organized and on track. With experience in admin support, content management, and client coordination, I
-							focus on making day-to-day tasks easier and more manageable. I&apos;m detail-oriented, reliable, and
-							committed to delivering support that actually makes a difference.
-						</p>
-
-						<p className='text-white/80 text-sm md:text-base leading-relaxed'>
-							I&apos;m always improving my skills and learning better systems to provide efficient and consistent
-							support for every client I work with. Let&apos;s work together and make your workload lighter.
-						</p>
-
-						{/* Quick Stats Row */}
-						<div className='grid grid-cols-3 gap-4 my-4'>
-							<div>
-								<h4 className='text-3xl md:text-4xl font-bold mb-1'>400+</h4>
-								<p className='text-white/70 text-xs md:text-sm'>Projects Completed</p>
+					{/* Reduced max width to 5xl, updated to md:grid-cols-2 for iPad side-by-side, and increased gap by ~25px */}
+					<div className='max-w-5xl mx-auto px-6 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[73px] lg:gap-20 overflow-hidden md:overflow-visible'>
+						{/* Education Card */}
+						<motion.div
+							style={{
+								x: isPhone ? 0 : expCard1X,
+								scale: isPhone ? 1 : expScale,
+								opacity: isPhone ? 1 : expOpacity,
+							}}
+							className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95   via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-white/80 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+						>
+							<div className='flex items-center gap-4 mb-6'>
+								<div className='w-12 h-12 rounded-full bg-brandMaroon/10 flex items-center justify-center text-brandMaroon'>
+									<GraduationCap size={28} />
+								</div>
+								<h3 className='text-2xl font-bold text-gray-900'>Education</h3>
 							</div>
-							<div>
-								<h4 className='text-3xl md:text-4xl font-bold mb-1'>10+</h4>
-								<p className='text-white/70 text-xs md:text-sm'>Industry Serves</p>
-							</div>
-							<div>
-								<h4 className='text-3xl md:text-4xl font-bold mb-1'>2+</h4>
-								<p className='text-white/70 text-xs md:text-sm'>Years of Experience</p>
-							</div>
-						</div>
 
-						<div className='pt-4'>
-							<button className='bg-brandPink hover:bg-[#c27c8f] text-white px-8 py-3.5 rounded-full text-sm font-bold transition-all shadow-lg hover:-translate-y-1'>
-								Work With Me
-							</button>
-						</div>
+							<div className='w-full h-[1.5px] bg-brandMaroon/20 mb-8'></div>
+
+							{/* Custom Timeline Component */}
+							<div className='border-l-[1.5px] border-brandMaroon/20 ml-2 space-y-8 py-2'>
+								{educationData.map((item, i) => (
+									<div key={i} className='relative pl-6'>
+										{/* The Dot */}
+										<div className='absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brandMaroon ring-4 ring-white/50'></div>
+
+										<p className='text-xs text-gray-500 font-semibold tracking-wide mb-1'>{item.date}</p>
+										<h4 className='text-base md:text-lg font-bold text-gray-900 leading-tight'>{item.title}</h4>
+										{/* whitespace-pre-line makes \n line breaks work perfectly! */}
+										<p className='text-sm text-gray-700 leading-snug whitespace-pre-line mt-1'>{item.desc}</p>
+									</div>
+								))}
+							</div>
+						</motion.div>
+
+						{/* Work Experience Card */}
+						<motion.div
+							style={{
+								x: isPhone ? 0 : expCard2X,
+								scale: isPhone ? 1 : expScale,
+								opacity: isPhone ? 1 : expOpacity,
+							}}
+							className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95   via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-brandPink/50 shadow-[0_5px_20px_rgba(255,255,255,0.8)]'
+						>
+							<div className='flex items-center gap-4 mb-6'>
+								<div className='w-12 h-12 rounded-full bg-brandMaroon/10 flex items-center justify-center text-brandMaroon'>
+									<Briefcase size={28} />
+								</div>
+								<h3 className='text-2xl font-bold text-gray-900'>Work Experience</h3>
+							</div>
+
+							<div className='w-full h-[1.5px] bg-brandMaroon/20 mb-8'></div>
+
+							{/* Custom Timeline Component */}
+							<div className='border-l-[1.5px] border-brandMaroon/20 ml-2 space-y-8 py-2'>
+								{workData.map((item, i) => (
+									<div key={i} className='relative pl-6'>
+										{/* The Dot */}
+										<div className='absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brandMaroon ring-4 ring-white/50'></div>
+
+										<p className='text-xs text-gray-500 font-semibold tracking-wide mb-1'>{item.date}</p>
+										<h4 className='text-base md:text-lg font-bold text-gray-900 leading-tight'>{item.title}</h4>
+										<p className='text-sm text-gray-700 leading-snug whitespace-pre-line mt-1'>{item.desc}</p>
+									</div>
+								))}
+							</div>
+						</motion.div>
 					</div>
-				</div>
-			</section>
+				</section>
+			</div>
 		</div>
 	);
 }
