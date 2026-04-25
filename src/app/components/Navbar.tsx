@@ -32,7 +32,6 @@ export default function Navbar() {
 
 	return (
 		<>
-			{/* Increased header z-index to z-50 to ensure it's above hero content */}
 			<header className='fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md z-50 px-6 py-4 md:px-12 lg:px-24 flex items-center justify-between shadow-sm'>
 				{/* Logo */}
 				<Link href='#home' className='flex items-center gap-2 cursor-pointer z-[60] relative'>
@@ -44,8 +43,8 @@ export default function Navbar() {
 					</span>
 				</Link>
 
-				{/* Desktop Nav Links - Shifted from md: to lg: so iPad gets burger menu */}
-				<nav className='hidden lg:flex items-center gap-8 text-sm font-medium text-gray-800'>
+				{/* Desktop Nav Links - Now triggers at xl: (1280px) to protect iPad Pros! */}
+				<nav className='hidden xl:flex items-center gap-8 text-sm font-medium text-gray-800'>
 					<Link href='#home' className='hover:text-brandMaroon transition-colors'>
 						Home
 					</Link>
@@ -66,8 +65,8 @@ export default function Navbar() {
 					</Link>
 				</nav>
 
-				{/* Get Started Button (Desktop) - Shifted from md: to lg: */}
-				<div className='hidden lg:block'>
+				{/* Get Started Button (Desktop) */}
+				<div className='hidden xl:block'>
 					<Link
 						href='#contact'
 						className='bg-brandMaroon hover:bg-[#600f1e] text-white px-6 py-2.5 rounded-full text-sm font-medium transition-all shadow-md'
@@ -76,10 +75,9 @@ export default function Navbar() {
 					</Link>
 				</div>
 
-				{/* Mobile Menu Toggle Button - Shifted from md: to lg: */}
-				{/* Increased to z-[60] so it sits ON TOP of the mobile menu overlay */}
+				{/* Mobile Menu Toggle Button - Visible up to 1280px */}
 				<button
-					className='lg:hidden text-gray-800 p-2 z-[60] relative transition-transform'
+					className='xl:hidden text-gray-800 p-2 z-[60] relative transition-transform'
 					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
 				>
 					<AnimatePresence mode='wait'>
@@ -107,16 +105,14 @@ export default function Navbar() {
 			</header>
 
 			{/* Full-Screen Animated Mobile Menu */}
-			{/* Shifted from md: to lg: */}
 			<motion.div
 				initial='closed'
 				animate={isMobileMenuOpen ? "open" : "closed"}
 				variants={menuVariants}
-				className='fixed inset-0 z-50 bg-brandMaroon lg:hidden flex flex-col items-center justify-center pointer-events-none'
+				className='fixed inset-0 z-50 bg-brandMaroon xl:hidden flex flex-col items-center justify-center pointer-events-none'
 				style={{ pointerEvents: isMobileMenuOpen ? "auto" : "none" }}
 			>
 				<motion.div variants={linkContainerVariants} className='flex flex-col items-center gap-8'>
-					{/* Updated menu items to match desktop */}
 					{["Home", "Services", "About Me", "Portfolio", "Testimonials", "Contact"].map((item, i) => (
 						<motion.div key={i} variants={linkVariants}>
 							<Link
@@ -128,7 +124,6 @@ export default function Navbar() {
 							</Link>
 						</motion.div>
 					))}
-					{/* Removed the Get Started button block from here */}
 				</motion.div>
 			</motion.div>
 		</>

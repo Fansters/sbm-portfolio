@@ -4,7 +4,7 @@ import Navbar from "@/app/components/Navbar";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-import { GraduationCap, Briefcase } from "lucide-react"; // Imported new icons for the timeline!
+import { GraduationCap, Briefcase } from "lucide-react";
 
 // --- DATA FOR SERVICES SECTION ---
 const servicesData = [
@@ -101,6 +101,25 @@ const workData = [
 	{ date: "Oct 2024 - Jan 2025", title: "Social Media Manager", desc: "LW Business Innovations" },
 ];
 
+// --- DATA FOR PORTFOLIO SECTION ---
+const portfolioData = [
+	{
+		client: "Win with Barlow",
+		projects: [
+			{
+				image: "/portfolio/spreadsheet.png", // Replace with your actual image path
+				overlay: "Client details hidden for confidentiality",
+				desc: "Organized client concerns into a structured sheet to help streamline responses and ensure no inquiries were missed. This system made it easier to track, prioritize, and respond efficiently.",
+			},
+			{
+				image: "/portfolio/inbox.png", // Replace with your actual image path
+				overlay: "Client details hidden for confidentiality",
+				desc: "Managed and organized client emails by categorizing messages and maintaining a clear workflow for timely and accurate responses.",
+			},
+		],
+	},
+];
+
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isMobile, setIsMobile] = useState(false);
@@ -179,7 +198,6 @@ export default function Home() {
 		offset: ["start end", "end start"],
 	});
 
-	// Enter completes at 0.45 (centered), hold until 0.55 (half visible past center), then exit
 	const expCard1X = useTransform(expScroll, [0.1, 0.45, 0.55, 0.9], [-400, 0, 0, -400]);
 	const expCard2X = useTransform(expScroll, [0.1, 0.45, 0.55, 0.9], [400, 0, 0, 400]);
 	const expScale = useTransform(expScroll, [0.1, 0.45, 0.55, 0.9], [0.8, 1, 1, 0.8]);
@@ -234,9 +252,12 @@ export default function Home() {
 			<main
 				id='home'
 				onMouseMove={handleMouseMove}
-				className='relative min-h-[100dvh] pt-24 md:pt-32 lg:pt-40 flex items-center px-6 md:px-12 lg:px-24'
+				// Removed min-h-[100dvh] & flex-items-center! Added static generous padding.
+				// This solves both the mobile URL bar lag AND the desktop 150% zoom overlap bug!
+				className='relative pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-48 px-6 md:px-12 lg:px-24'
 			>
-				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 z-40 relative pb-[200px] md:pb-[260px] lg:pb-0'>
+				{/* Adjusted bottom padding to perfectly seat the text away from the absolute image */}
+				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 z-40 relative pb-[280px] md:pb-[340px] lg:pb-[140px]'>
 					<div className='flex flex-col gap-4 md:gap-6 max-w-xl mt-2 md:mt-0'>
 						<motion.h2
 							variants={helloVariants}
@@ -517,7 +538,6 @@ export default function Home() {
 					<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center'>
 						{/* LEFT: Image Container without pink circle */}
 						<div className='relative w-full max-w-[280px] sm:max-w-sm md:max-w-md mx-auto flex items-end justify-center mt-8 lg:mt-0'>
-							{/* Image without pink circle background, using SherAboutMe */}
 							<Image
 								src='/sherAboutMe.png'
 								alt='Sheremie'
@@ -528,7 +548,7 @@ export default function Home() {
 						</div>
 
 						{/* RIGHT: Text Content */}
-						<div className='flex flex-col gap-6 text-white'>
+						<div className='flex flex-col gap-6 text-white text-center lg:text-left'>
 							<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
 								Who is <span className='text-brandPink italic'>Sheremie?</span>
 							</h2>
@@ -561,7 +581,8 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className='pt-4'>
+							{/* Centered button on mobile, left-aligned on desktop */}
+							<div className='pt-4 flex justify-center lg:justify-start'>
 								<button className='bg-white hover:bg-gray-100 text-brandMaroon px-8 py-3.5 rounded-full text-sm font-bold transition-all shadow-lg hover:-translate-y-1'>
 									Work With Me
 								</button>
@@ -570,9 +591,8 @@ export default function Home() {
 					</div>
 				</section>
 
-				{/* --- NEW: EDUCATION & WORK EXPERIENCE SECTION --- */}
+				{/* --- EDUCATION & WORK EXPERIENCE SECTION --- */}
 				<section ref={experienceRef} id='experience' className='pt-24 md:pt-32 pb-24 md:pb-32'>
-					{/* Subtle Section Header */}
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						whileInView={{ opacity: 1, y: 0 }}
@@ -591,7 +611,6 @@ export default function Home() {
 						</h2>
 					</motion.div>
 
-					{/* Reduced max width to 5xl, updated to md:grid-cols-2 for iPad side-by-side, and increased gap by ~25px */}
 					<div className='max-w-5xl mx-auto px-6 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[73px] lg:gap-20 overflow-hidden md:overflow-visible'>
 						{/* Education Card */}
 						<motion.div
@@ -600,7 +619,7 @@ export default function Home() {
 								scale: isPhone ? 1 : expScale,
 								opacity: isPhone ? 1 : expOpacity,
 							}}
-							className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95   via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-white/80 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+							className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95 via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-white/80 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
 						>
 							<div className='flex items-center gap-4 mb-6'>
 								<div className='w-12 h-12 rounded-full bg-brandMaroon/10 flex items-center justify-center text-brandMaroon'>
@@ -611,30 +630,26 @@ export default function Home() {
 
 							<div className='w-full h-[1.5px] bg-brandMaroon/20 mb-8'></div>
 
-							{/* Custom Timeline Component */}
 							<div className='border-l-[1.5px] border-brandMaroon/20 ml-2 space-y-8 py-2'>
 								{educationData.map((item, i) => (
 									<div key={i} className='relative pl-6'>
-										{/* The Dot */}
 										<div className='absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brandMaroon ring-4 ring-white/50'></div>
-
 										<p className='text-xs text-gray-500 font-semibold tracking-wide mb-1'>{item.date}</p>
 										<h4 className='text-base md:text-lg font-bold text-gray-900 leading-tight'>{item.title}</h4>
-										{/* whitespace-pre-line makes \n line breaks work perfectly! */}
 										<p className='text-sm text-gray-700 leading-snug whitespace-pre-line mt-1'>{item.desc}</p>
 									</div>
 								))}
 							</div>
 						</motion.div>
 
-						{/* Work Experience Card */}
+						{/* Work Experience Card - Updated styling to perfectly match Education */}
 						<motion.div
 							style={{
 								x: isPhone ? 0 : expCard2X,
 								scale: isPhone ? 1 : expScale,
 								opacity: isPhone ? 1 : expOpacity,
 							}}
-							className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95   via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-brandPink/50 shadow-[0_5px_20px_rgba(255,255,255,0.8)]'
+							className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95 via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-white/80 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
 						>
 							<div className='flex items-center gap-4 mb-6'>
 								<div className='w-12 h-12 rounded-full bg-brandMaroon/10 flex items-center justify-center text-brandMaroon'>
@@ -645,13 +660,10 @@ export default function Home() {
 
 							<div className='w-full h-[1.5px] bg-brandMaroon/20 mb-8'></div>
 
-							{/* Custom Timeline Component */}
 							<div className='border-l-[1.5px] border-brandMaroon/20 ml-2 space-y-8 py-2'>
 								{workData.map((item, i) => (
 									<div key={i} className='relative pl-6'>
-										{/* The Dot */}
 										<div className='absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brandMaroon ring-4 ring-white/50'></div>
-
 										<p className='text-xs text-gray-500 font-semibold tracking-wide mb-1'>{item.date}</p>
 										<h4 className='text-base md:text-lg font-bold text-gray-900 leading-tight'>{item.title}</h4>
 										<p className='text-sm text-gray-700 leading-snug whitespace-pre-line mt-1'>{item.desc}</p>
@@ -662,6 +674,85 @@ export default function Home() {
 					</div>
 				</section>
 			</div>
+
+			{/* --- NEW: PORTFOLIO SECTION --- */}
+			<section id='portfolio' className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-24 md:py-32 z-40'>
+				{/* Section Header */}
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: "-50px" }}
+					transition={{ duration: 0.6 }}
+					className='mb-16 md:mb-20'
+				>
+					<div className='flex items-center gap-3 mb-4'>
+						<div className='w-6 h-[2px] bg-brandMaroon'></div>
+						<span className='text-gray-800 text-sm font-medium tracking-wide uppercase'>Portfolio</span>
+					</div>
+					<h2 className='text-4xl md:text-5xl font-bold text-gray-900'>
+						My Latest <span className='text-brandMaroon italic'>Tasks/Projects</span>
+					</h2>
+				</motion.div>
+
+				{/* Portfolio Content */}
+				{portfolioData.map((clientData, idx) => (
+					<div key={idx} className='mb-24 last:mb-0'>
+						{/* Client Sub-Header */}
+						<motion.h3
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: "-50px" }}
+							transition={{ duration: 0.5 }}
+							className='text-2xl md:text-3xl font-bold italic text-center text-gray-900 mb-12'
+						>
+							{clientData.client}
+						</motion.h3>
+
+						{/* Projects Grid (1 col on phone/iPad, 2 cols on Desktop) */}
+						<div className='grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16'>
+							{clientData.projects.map((project, pIdx) => (
+								<motion.div
+									key={pIdx}
+									initial={{ opacity: 0, y: 30 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									viewport={{ once: true, margin: "-50px" }}
+									transition={{ duration: 0.5, delay: pIdx * 0.2 }}
+									className='flex flex-col items-center gap-6'
+								>
+									{/* Image Container with Overlay */}
+									<div className='relative w-full aspect-[16/9] bg-gray-200 rounded-lg overflow-hidden shadow-md group'>
+										{/* Fallback Placeholder (Shows until you add real images) */}
+										<div className='absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-100'>
+											<span className='text-sm font-medium tracking-widest uppercase'>Image: {project.image}</span>
+										</div>
+
+										{/* Uncomment this once you add your images to the public/portfolio folder!
+                    <Image 
+                      src={project.image}
+                      alt="Portfolio Project"
+                      fill
+                      className="object-cover"
+                    />
+                    */}
+
+										{/* Maroon Overlay Pill */}
+										<div className='absolute inset-0 flex items-center justify-center bg-black/5 pointer-events-none'>
+											<div className='bg-brandMaroon text-white italic font-medium px-4 py-1.5 rounded shadow-lg text-sm md:text-base text-center'>
+												{project.overlay}
+											</div>
+										</div>
+									</div>
+
+									{/* Description underneath */}
+									<p className='text-gray-900 text-sm md:text-base leading-relaxed text-center max-w-lg font-medium'>
+										{project.desc}
+									</p>
+								</motion.div>
+							))}
+						</div>
+					</div>
+				))}
+			</section>
 		</div>
 	);
 }
