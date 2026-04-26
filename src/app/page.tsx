@@ -10,8 +10,8 @@ import { GraduationCap, Briefcase } from "lucide-react";
 const servicesData = [
 	{
 		number: "01",
-		title: "BASIC",
-		desc: "Best for light tasks and day-to-day assistance",
+		title: "ADMIN",
+		desc: "For daily organization and task management",
 		glassClass:
 			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/40 via-white/30 to-brandPink/30 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
 		titleClass: "text-gray-900",
@@ -20,12 +20,12 @@ const servicesData = [
 		bulletIconClass: "bg-brandMaroon",
 		btnClass: "bg-brandMaroon hover:bg-[#600f1e] text-white",
 		numberClass: "from-black/10 to-transparent",
-		items: ["Calendar management", "Email organization", "Task tracking", "Basic admin support"],
+		items: ["Calendar management", "Email organization", "Data entry", "Research"],
 	},
 	{
 		number: "02",
-		title: "PRO",
-		desc: "For individuals who need consistent, reliable support",
+		title: "COMMS",
+		desc: "For handling client and team interactions",
 		glassClass:
 			"bg-[length:300%_300%] bg-gradient-to-br from-brandMaroon/99 via-brandMaroon/80 to-brandMaroon/90 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/30 shadow-lg md:shadow-[0_15px_40px_rgba(122,19,39,0.25),inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_4px_rgba(0,0,0,0.3)]",
 		titleClass: "text-white",
@@ -34,12 +34,12 @@ const servicesData = [
 		bulletIconClass: "bg-brandPink",
 		btnClass: "bg-white hover:bg-gray-100 text-brandMaroon",
 		numberClass: "from-white/15 to-transparent",
-		items: ["All Essential", "Inbox & communication", "Social media support", "Content posting"],
+		items: ["Inbox & email responses", "Client communication", "Meeting scheduling", "Follow-ups"],
 	},
 	{
 		number: "03",
-		title: "CUSTOM",
-		desc: "Flexible support for your workflow and needs",
+		title: "SOCIAL",
+		desc: "For managing and posting social media content",
 		glassClass:
 			"bg-[length:300%_300%] bg-gradient-to-br from-brandPink/20 via-white/60 to-brandPink/30 backdrop-blur-sm md:backdrop-blur-3xl border-[1.5px] border-white/60 shadow-lg md:shadow-[0_10px_30px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(255,255,255,0.3)]",
 		titleClass: "text-gray-900",
@@ -48,7 +48,7 @@ const servicesData = [
 		bulletIconClass: "bg-brandMaroon",
 		btnClass: "bg-brandMaroon hover:bg-[#600f1e] text-white",
 		numberClass: "from-black/10 to-transparent",
-		items: ["Customized tasks", "Ongoing admin support", "Priority assistance", "Scalable support"],
+		items: ["Content management", "Content posting", "Graphic design", "Caption writing"],
 	},
 ];
 
@@ -107,16 +107,37 @@ const portfolioData = [
 		client: "Win with Barlow",
 		projects: [
 			{
-				image: "/portfolio/barlow.jpeg", // Replace with your actual image path
+				image: "/portfolio/spreadsheet.png",
 				overlay: "Client details hidden for confidentiality",
 				desc: "Organized client concerns into a structured sheet to help streamline responses and ensure no inquiries were missed. This system made it easier to track, prioritize, and respond efficiently.",
 			},
 			{
-				image: "/portfolio/barlow2.jpeg", // Replace with your actual image path
+				image: "/portfolio/inbox.png",
 				overlay: "Client details hidden for confidentiality",
 				desc: "Managed and organized client emails by categorizing messages and maintaining a clear workflow for timely and accurate responses.",
 			},
 		],
+	},
+];
+
+// --- GRAPHIC DESIGN PORTFOLIO DATA ---
+const graphicDesignData = [
+	{
+		client: "EZ Mobile DNA",
+		images: [
+			"/portfolio/ez1.jpeg",
+			"/portfolio/ez2.jpeg",
+			"/portfolio/ez3.jpeg",
+			"/portfolio/ez4.jpeg",
+			"/portfolio/ez5.jpeg",
+			"/portfolio/ez6.jpeg",
+			"/portfolio/ez7.jpeg",
+			"/portfolio/ez8.jpeg",
+		],
+	},
+	{
+		client: "Test Data",
+		images: ["/portfolio/ez9.jpeg", "/portfolio/ez10.jpeg", "/portfolio/ez11.jpeg"],
 	},
 ];
 
@@ -190,7 +211,6 @@ export default function Home() {
 	const cardScales = [card1Scale, card2Scale, card3Scale];
 	const cardOpacities = [card1Opacity, card2Opacity, card3Opacity];
 
-	// --- SCROLL ANIMATION SETUP (Experience) ---
 	const experienceRef = useRef<HTMLElement>(null);
 
 	const { scrollYProgress: expScroll } = useScroll({
@@ -252,13 +272,11 @@ export default function Home() {
 			<main
 				id='home'
 				onMouseMove={handleMouseMove}
-				// Removed min-h-[100dvh] & flex-items-center! Added static generous padding.
-				// This solves both the mobile URL bar lag AND the desktop 150% zoom overlap bug!
 				className='relative pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-48 px-6 md:px-12 lg:px-24'
 			>
-				{/* Adjusted bottom padding to perfectly seat the text away from the absolute image */}
-				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12 z-40 relative pb-[280px] md:pb-[340px] lg:pb-[140px]'>
-					<div className='flex flex-col gap-4 md:gap-6 max-w-xl mt-2 md:mt-0'>
+				{/* Adjusted the desktop layout to 55% / 45% ratio */}
+				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4 lg:gap-12 z-40 relative pb-[350px] md:pb-[340px] lg:pb-[140px]'>
+					<div className='flex flex-col gap-4 md:gap-6 w-full mt-2 md:mt-0 pr-0 lg:pr-8'>
 						<motion.h2
 							variants={helloVariants}
 							initial='hidden'
@@ -315,9 +333,7 @@ export default function Home() {
 								so you can focus on what matters most.
 							</p>
 
-							<p className='hidden md:block text-xs md:text-sm text-gray-500 italic'>
-								Currently available for 2-3 new clients
-							</p>
+							<p className='text-xs md:text-sm text-gray-500 italic'>Currently available for 2-3 new clients</p>
 
 							<div className='pt-2'>
 								<button className='bg-brandMaroon hover:bg-[#600f1e] text-white px-6 py-3 md:px-8 md:py-3.5 rounded-full text-sm md:text-base font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1'>
@@ -527,27 +543,25 @@ export default function Home() {
 				style={{ backgroundImage: 'url("/prismMaroon.svg")', backgroundRepeat: "repeat" }}
 			>
 				{/* --- ABOUT ME SECTION --- */}
-				<section id='about' className='py-24 md:py-32'>
-					<div className='flex justify-center mb-16 md:mb-24'>
+				<section id='about' className='py-16 md:py-24'>
+					<div className='flex justify-center mb-6'>
 						<div className='flex items-center gap-3'>
 							<div className='w-6 h-[1px] bg-white/60'></div>
 							<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>About Me</span>
 						</div>
 					</div>
 
-					<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center'>
-						{/* LEFT: Image Container without pink circle */}
-						<div className='relative w-full max-w-[280px] sm:max-w-sm md:max-w-md mx-auto flex items-end justify-center mt-8 lg:mt-0'>
+					<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-[45%_1fr] gap-6 items-center'>
+						<div className='relative w-full mx-auto flex justify-center mt-8 lg:mt-0'>
 							<Image
 								src='/sherAboutMe.png'
 								alt='Sheremie'
-								width={500}
+								width={600}
 								height={600}
-								className='relative z-10 w-[90%] h-auto object-contain object-bottom drop-shadow-xl'
+								className='w-full h-auto object-contain drop-shadow-xl'
 							/>
 						</div>
 
-						{/* RIGHT: Text Content */}
 						<div className='flex flex-col gap-6 text-white text-center lg:text-left'>
 							<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
 								Who is <span className='text-brandPink italic'>Sheremie?</span>
@@ -565,7 +579,6 @@ export default function Home() {
 								support for every client I work with. Let&apos;s work together and make your workload lighter.
 							</p>
 
-							{/* Quick Stats Row */}
 							<div className='grid grid-cols-3 gap-4 my-4'>
 								<div>
 									<h4 className='text-3xl md:text-4xl font-bold mb-1'>400+</h4>
@@ -581,7 +594,6 @@ export default function Home() {
 								</div>
 							</div>
 
-							{/* Centered button on mobile, left-aligned on desktop */}
 							<div className='pt-4 flex justify-center lg:justify-start'>
 								<button className='bg-white hover:bg-gray-100 text-brandMaroon px-8 py-3.5 rounded-full text-sm font-bold transition-all shadow-lg hover:-translate-y-1'>
 									Work With Me
@@ -642,7 +654,7 @@ export default function Home() {
 							</div>
 						</motion.div>
 
-						{/* Work Experience Card - Updated styling to perfectly match Education */}
+						{/* Work Experience Card */}
 						<motion.div
 							style={{
 								x: isPhone ? 0 : expCard2X,
@@ -675,9 +687,11 @@ export default function Home() {
 				</section>
 			</div>
 
-			{/* --- NEW: PORTFOLIO SECTION --- */}
-			<section id='portfolio' className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-24 md:py-32 z-40'>
-				{/* Section Header */}
+			{/* --- PORTFOLIO SECTION (Tasks) --- */}
+			<section
+				id='portfolio'
+				className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pt-24 pb-24 mb-32 md:mb-48 z-40'
+			>
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -694,10 +708,8 @@ export default function Home() {
 					</h2>
 				</motion.div>
 
-				{/* Portfolio Content */}
 				{portfolioData.map((clientData, idx) => (
 					<div key={idx} className='mb-24 last:mb-0'>
-						{/* Client Sub-Header */}
 						<motion.h3
 							initial={{ opacity: 0, y: 20 }}
 							whileInView={{ opacity: 1, y: 0 }}
@@ -708,7 +720,6 @@ export default function Home() {
 							{clientData.client}
 						</motion.h3>
 
-						{/* Projects Grid (1 col on phone/iPad, 2 cols on Desktop) */}
 						<div className='grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16'>
 							{clientData.projects.map((project, pIdx) => (
 								<motion.div
@@ -719,23 +730,8 @@ export default function Home() {
 									transition={{ duration: 0.5, delay: pIdx * 0.2 }}
 									className='flex flex-col items-center gap-6'
 								>
-									{/* Image Container with Overlay */}
 									<div className='relative w-full aspect-[16/9] bg-gray-200 rounded-lg overflow-hidden shadow-md group'>
-										{/* Fallback Placeholder (Shows until you add real images) */}
-										<div className='absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-100'>
-											<span className='text-sm font-medium tracking-widest uppercase'>Image: {project.image}</span>
-										</div>
-
-										{/* Uncomment this once you add your images to the public/portfolio folder! */}
-                    <Image 
-                      src={project.image}
-                      alt="Portfolio Project"
-                      fill
-                      className="object-cover"
-                    />
-                   
-
-										{/* Maroon Overlay Pill */}
+										<Image src={project.image} alt='Portfolio Project' fill className='object-cover' />
 										<div className='absolute inset-0 flex items-center justify-center bg-black/5 pointer-events-none'>
 											<div className='bg-brandMaroon text-white italic font-medium px-4 py-1.5 rounded shadow-lg text-sm md:text-base text-center'>
 												{project.overlay}
@@ -743,13 +739,100 @@ export default function Home() {
 										</div>
 									</div>
 
-									{/* Description underneath */}
 									<p className='text-gray-900 text-sm md:text-base leading-relaxed text-center max-w-lg font-medium'>
 										{project.desc}
 									</p>
 								</motion.div>
 							))}
 						</div>
+					</div>
+				))}
+			</section>
+
+			{/* --- GRAPHIC DESIGN PORTFOLIO SECTION (Fanning Stack Animation) --- */}
+			<section className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pb-24 md:pb-48 z-40'>
+				{graphicDesignData.map((work, idx) => (
+					<div key={idx} className='mb-32 md:mb-48 last:mb-0'>
+						<motion.h3
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: "-50px" }}
+							transition={{ duration: 0.5 }}
+							className='text-3xl md:text-4xl font-bold italic text-center text-gray-900 mb-4'
+						>
+							{work.client}
+						</motion.h3>
+
+						<motion.div
+							initial='hidden'
+							whileInView='rest'
+							whileHover='containerHover'
+							viewport={{ once: true, margin: "-100px" }}
+							className='relative w-full h-[400px] sm:h-[500px] lg:h-[600px] flex items-center justify-center mt-6 mb-12 md:mt-8 md:mb-16'
+						>
+							{work.images.map((img, i) => {
+								const isCenter = i === 0;
+								const direction = i % 2 === 0 ? 1 : -1;
+								const step = Math.ceil(i / 2);
+
+								const maxStep = Math.max(1, Math.floor(work.images.length / 2));
+
+								const baseMaxSpread = isPhone ? 100 : isMobile ? 220 : 400;
+								const hoverMaxSpread = isPhone ? 130 : isMobile ? 320 : 550;
+
+								const spreadX_rest = baseMaxSpread / maxStep;
+								const spreadX_hover = hoverMaxSpread / maxStep;
+
+								const targetX_rest = isCenter ? 0 : direction * step * spreadX_rest;
+								const targetX_hover = isCenter ? 0 : direction * step * spreadX_hover;
+
+								const targetY_rest = isCenter ? 0 : step * 15;
+								const targetY_hover = isCenter ? -10 : step * 5;
+
+								const targetRotate_rest = isCenter ? 0 : direction * step * 5;
+								const targetRotate_hover = isCenter ? 0 : direction * step * 2;
+
+								const zIndex = 50 - i;
+
+								return (
+									<motion.div
+										key={i}
+										variants={{
+											hidden: isCenter
+												? { y: 300, opacity: 0, rotate: -5 }
+												: { x: 0, y: 0, opacity: 0, scale: 0.8, rotate: 0 },
+											rest: {
+												x: targetX_rest,
+												y: targetY_rest,
+												opacity: 1,
+												scale: 1,
+												rotate: targetRotate_rest,
+												transition: {
+													duration: 0.8,
+													type: "spring",
+													bounce: 0.4,
+													delay: isCenter ? 0 : 0.5 + i * 0.05,
+												},
+											},
+											containerHover: {
+												x: targetX_hover,
+												y: targetY_hover,
+												opacity: 1,
+												scale: 1,
+												rotate: targetRotate_hover,
+												transition: { duration: 0.4, type: "spring", bounce: 0.2 },
+											},
+										}}
+										// Removed zIndex modification on hover to preserve the static stacking order!
+										whileHover={{ scale: 1.15, y: targetY_hover - 20, transition: { duration: 0.2 } }}
+										className='absolute w-[200px] sm:w-[250px] md:w-[300px] lg:w-[350px] aspect-square rounded-xl overflow-hidden shadow-2xl border-4 border-white bg-white cursor-pointer'
+										style={{ zIndex }}
+									>
+										<Image src={img} alt={`${work.client} design ${i + 1}`} fill className='object-cover' />
+									</motion.div>
+								);
+							})}
+						</motion.div>
 					</div>
 				))}
 			</section>
