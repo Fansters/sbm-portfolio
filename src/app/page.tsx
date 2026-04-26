@@ -107,12 +107,12 @@ const portfolioData = [
 		client: "Win with Barlow",
 		projects: [
 			{
-				image: "/portfolio/spreadsheet.png", // Replace with your actual image path
+				image: "/portfolio/barlow.jpeg", // Replace with your actual image path
 				overlay: "Client details hidden for confidentiality",
 				desc: "Organized client concerns into a structured sheet to help streamline responses and ensure no inquiries were missed. This system made it easier to track, prioritize, and respond efficiently.",
 			},
 			{
-				image: "/portfolio/inbox.png", // Replace with your actual image path
+				image: "/portfolio/barlow2.jpeg", // Replace with your actual image path
 				overlay: "Client details hidden for confidentiality",
 				desc: "Managed and organized client emails by categorizing messages and maintaining a clear workflow for timely and accurate responses.",
 			},
@@ -726,14 +726,14 @@ export default function Home() {
 											<span className='text-sm font-medium tracking-widest uppercase'>Image: {project.image}</span>
 										</div>
 
-										{/* Uncomment this once you add your images to the public/portfolio folder!
+										{/* Uncomment this once you add your images to the public/portfolio folder! */}
                     <Image 
                       src={project.image}
                       alt="Portfolio Project"
                       fill
                       className="object-cover"
                     />
-                    */}
+                   
 
 										{/* Maroon Overlay Pill */}
 										<div className='absolute inset-0 flex items-center justify-center bg-black/5 pointer-events-none'>
