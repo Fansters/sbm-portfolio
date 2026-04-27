@@ -43,25 +43,31 @@ export default function Navbar() {
 					</span>
 				</Link>
 
-				{/* Desktop Nav Links - Now triggers at xl: (1280px) to protect iPad Pros! */}
+				{/* Desktop Nav Links - Now with expanding underline animation! */}
 				<nav className='hidden xl:flex items-center gap-8 text-sm font-medium text-gray-800'>
-					<Link href='#home' className='hover:text-brandMaroon transition-colors'>
+					<Link href='#home' className='relative group hover:text-brandMaroon transition-colors py-1'>
 						Home
+						<span className='absolute left-0 bottom-0 w-0 h-[2px] bg-brandMaroon transition-all duration-300 group-hover:w-full'></span>
 					</Link>
-					<Link href='#services' className='hover:text-brandMaroon transition-colors'>
+					<Link href='#services' className='relative group hover:text-brandMaroon transition-colors py-1'>
 						Services
+						<span className='absolute left-0 bottom-0 w-0 h-[2px] bg-brandMaroon transition-all duration-300 group-hover:w-full'></span>
 					</Link>
-					<Link href='#about' className='hover:text-brandMaroon transition-colors'>
+					<Link href='#about' className='relative group hover:text-brandMaroon transition-colors py-1'>
 						About Me
+						<span className='absolute left-0 bottom-0 w-0 h-[2px] bg-brandMaroon transition-all duration-300 group-hover:w-full'></span>
 					</Link>
-					<Link href='#portfolio' className='hover:text-brandMaroon transition-colors'>
+					<Link href='#portfolio' className='relative group hover:text-brandMaroon transition-colors py-1'>
 						Portfolio
+						<span className='absolute left-0 bottom-0 w-0 h-[2px] bg-brandMaroon transition-all duration-300 group-hover:w-full'></span>
 					</Link>
-					<Link href='#testimonials' className='hover:text-brandMaroon transition-colors'>
+					<Link href='#testimonials' className='relative group hover:text-brandMaroon transition-colors py-1'>
 						Testimonials
+						<span className='absolute left-0 bottom-0 w-0 h-[2px] bg-brandMaroon transition-all duration-300 group-hover:w-full'></span>
 					</Link>
-					<Link href='#contact' className='hover:text-brandMaroon transition-colors'>
+					<Link href='#contact' className='relative group hover:text-brandMaroon transition-colors py-1'>
 						Contact
+						<span className='absolute left-0 bottom-0 w-0 h-[2px] bg-brandMaroon transition-all duration-300 group-hover:w-full'></span>
 					</Link>
 				</nav>
 
@@ -75,7 +81,7 @@ export default function Navbar() {
 					</Link>
 				</div>
 
-				{/* Mobile Menu Toggle Button - Visible up to 1280px */}
+				{/* Mobile Menu Toggle Button */}
 				<button
 					className='xl:hidden text-gray-800 p-2 z-[60] relative transition-transform'
 					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -112,7 +118,7 @@ export default function Navbar() {
 				className='fixed inset-0 z-50 bg-brandMaroon xl:hidden flex flex-col items-center justify-center pointer-events-none'
 				style={{ pointerEvents: isMobileMenuOpen ? "auto" : "none" }}
 			>
-				<motion.div variants={linkContainerVariants} className='flex flex-col items-center gap-8'>
+				<motion.div variants={linkContainerVariants} className='flex flex-col items-center gap-8 w-full'>
 					{["Home", "Services", "About Me", "Portfolio", "Testimonials", "Contact"].map((item, i) => (
 						<motion.div key={i} variants={linkVariants}>
 							<Link
@@ -124,6 +130,16 @@ export default function Navbar() {
 							</Link>
 						</motion.div>
 					))}
+
+					{/* New Prominent Close Button inside the menu */}
+					<motion.div variants={linkVariants} className='mt-8'>
+						<button
+							onClick={() => setIsMobileMenuOpen(false)}
+							className='flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-3 rounded-full text-sm font-bold tracking-wider transition-colors active:scale-95'
+						>
+							<X size={18} /> CLOSE MENU
+						</button>
+					</motion.div>
 				</motion.div>
 			</motion.div>
 		</>

@@ -4,9 +4,31 @@ import Navbar from "@/app/components/Navbar";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-import { GraduationCap, Briefcase } from "lucide-react";
+import { GraduationCap, Briefcase, Star, Phone, CircleFadingPlus, Mail } from "lucide-react";
 
-// --- DATA FOR SERVICES SECTION ---
+// ==========================================
+// 1. TYPE DEFINITIONS
+// ==========================================
+export type TaskProjectData = {
+	type: "tasks";
+	client: string;
+	projects: { image: string; overlay?: string; desc: string }[];
+};
+
+export type GraphicDesignProject = {
+	type: "gallery";
+	client: string;
+	images: string[];
+	subtitle?: string;
+	desc?: string;
+	aspectClass?: string;
+};
+
+export type ProjectData = TaskProjectData | GraphicDesignProject;
+
+// ==========================================
+// 2. DATA ARRAYS
+// ==========================================
 const servicesData = [
 	{
 		number: "01",
@@ -52,7 +74,6 @@ const servicesData = [
 	},
 ];
 
-// --- DATA FOR TOOLS SECTION ---
 const toolsData = [
 	{ name: "Instagram", icon: "/tools/instagram.svg" },
 	{ name: "TikTok", icon: "/tools/tiktok.svg" },
@@ -80,7 +101,6 @@ const toolsData = [
 	{ name: "Zapier", icon: "/tools/zapier.svg" },
 ];
 
-// --- DATA FOR EDUCATION & WORK SECTION ---
 const educationData = [
 	{
 		date: "2022-2026",
@@ -101,9 +121,31 @@ const workData = [
 	{ date: "Oct 2024 - Jan 2025", title: "Social Media Manager", desc: "LW Business Innovations" },
 ];
 
-// --- DATA FOR PORTFOLIO SECTION ---
-const portfolioData = [
+const testimonialsData = [
 	{
+		name: "Akira B.",
+		company: "Win with Barlow | EZMobileDNA",
+		quote:
+			"“Thank you for being committed to my business. You've made my life so much easier by taking things off my plate and handling them with care. I really appreciate your effort you put into everything you do.”",
+	},
+	{
+		name: "Norhakim S.",
+		company: "Mascon Tech | Seartify",
+		quote:
+			"“Hi Sheremie! I think you've been doing a splendid job so far by choosing the right articles and posts. Keep doing what you've done and maintain your great work ethics.”",
+	},
+	{
+		name: "Lucy W.",
+		company: "LW Business Innovations",
+		quote:
+			"“Omg, you did amazing. You're a natural talent and very fast! I am stunned by your work. It looks so goooood! Just a few mild changes but other than that, you are amazing!!!! Thank you so much.”",
+	},
+];
+
+// --- MASTER PORTFOLIO PIPELINE ---
+const allProjectsData: ProjectData[] = [
+	{
+		type: "tasks",
 		client: "Win with Barlow",
 		projects: [
 			{
@@ -118,11 +160,8 @@ const portfolioData = [
 			},
 		],
 	},
-];
-
-// --- GRAPHIC DESIGN PORTFOLIO DATA ---
-const graphicDesignData = [
 	{
+		type: "gallery",
 		client: "EZ Mobile DNA",
 		images: [
 			"/portfolio/ez1.jpeg",
@@ -130,30 +169,687 @@ const graphicDesignData = [
 			"/portfolio/ez3.jpeg",
 			"/portfolio/ez4.jpeg",
 			"/portfolio/ez5.jpeg",
-			"/portfolio/ez6.jpeg",
-			"/portfolio/ez7.jpeg",
-			"/portfolio/ez8.jpeg",
 		],
 	},
 	{
-		client: "Test Data",
-		images: ["/portfolio/ez9.jpeg", "/portfolio/ez10.jpeg", "/portfolio/ez11.jpeg"],
+		type: "tasks",
+		client: "Mascon/Seartify",
+		projects: [
+			{
+				image: "/portfolio/hakim1.jpg",
+				desc: "Created and organized job board listings by formatting content clearly and ensuring accurate details for better visibility and accessibility.",
+			},
+			{
+				image: "/portfolio/hakim2.jpg",
+				desc: "Managed and formatted news articles for publishing, ensuring clear structure, readability, and consistent presentation across the platform.",
+			},
+		],
+	},
+	{
+		type: "gallery",
+		client: "Royal Suntech Corporation",
+		subtitle: "Graphic Design Work Created During My Internship",
+		desc: "Designed a range of graphics during my internship, focusing on visual clarity, brand consistency, and effective content presentation.",
+		images: [
+			"/portfolio/st1.jpg",
+			"/portfolio/st2.jpg",
+			"/portfolio/st3.jpg",
+			"/portfolio/st4.jpg",
+			"/portfolio/st5.jpg",
+			"/portfolio/st6.jpg",
+			"/portfolio/st7.jpg",
+		],
+		aspectClass: "aspect-[4/5]",
 	},
 ];
 
+// ==========================================
+// 3. REUSABLE SECTION COMPONENTS
+// ==========================================
+
+const ServicesSection = ({ isMobile, isPhone }: { isMobile: boolean; isPhone: boolean }) => {
+	const servicesRef = useRef<HTMLElement>(null);
+	const { scrollYProgress } = useScroll({ target: servicesRef, offset: ["start end", "end start"] });
+
+	const r1 = isMobile ? [0.02, 0.2, 0.6, 0.99] : [0.0, 0.3, 0.7, 0.96];
+	const r2 = isMobile ? [0.04, 0.3, 0.7, 0.99] : [0.0, 0.35, 0.72, 0.98];
+	const r3 = isMobile ? [0.07, 0.4, 0.88, 1.0] : [0.0, 0.38, 0.75, 1.0];
+
+	const y1 = useTransform(scrollYProgress, r1, [400, 0, 0, -400]);
+	const y2 = useTransform(scrollYProgress, r2, [400, 0, 0, -500]);
+	const y3 = useTransform(scrollYProgress, r3, [400, 0, 0, -400]);
+
+	const scale1 = useTransform(scrollYProgress, r1, [0.8, 1, 1, 0.8]);
+	const scale2 = useTransform(scrollYProgress, r2, [0.8, 1, 1, 0.8]);
+	const scale3 = useTransform(scrollYProgress, r3, [0.8, 1, 1, 0.8]);
+
+	const op1Range = isMobile ? [0.1, 0.4, 0.9, 0.95] : [0.1, 0.3, 0.75, 0.85];
+	const op2Range = isMobile ? [0.15, 0.45, 0.92, 0.98] : [0.15, 0.4, 0.8, 0.9];
+	const op3Range = isMobile ? [0.2, 0.5, 0.95, 1.0] : [0.2, 0.5, 0.55, 0.95];
+
+	const opacity1 = useTransform(scrollYProgress, op1Range, [0, 1, 1, 0]);
+	const opacity2 = useTransform(scrollYProgress, op2Range, [0, 1, 1, 0]);
+	const opacity3 = useTransform(scrollYProgress, op3Range, [0, 1, 1, 0]);
+
+	const transforms = [
+		{ y: y1, scale: scale1, opacity: opacity1 },
+		{ y: y2, scale: scale2, opacity: opacity2 },
+		{ y: y3, scale: scale3, opacity: opacity3 },
+	];
+
+	return (
+		<section
+			ref={servicesRef}
+			id='services'
+			className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-24 md:py-32 z-40 overflow-x-clip'
+		>
+			<motion.div
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true, margin: "-100px" }}
+				transition={{ duration: 0.6 }}
+				className='mb-16'
+			>
+				<div className='flex items-center gap-3 mb-4'>
+					<div className='w-6 h-[2px] bg-brandMaroon'></div>
+					<span className='text-gray-800 text-sm font-medium tracking-wide uppercase'>Services</span>
+				</div>
+				<h2 className='text-4xl md:text-5xl font-bold text-gray-900'>
+					<span className='text-brandMaroon italic'>Services</span> I Provide
+				</h2>
+			</motion.div>
+
+			<div className='grid grid-cols-1 min-[651px]:grid-cols-2 min-[1001px]:grid-cols-3 gap-6 md:gap-8'>
+				{servicesData.map((service, index) => (
+					<motion.div
+						key={index}
+						animate={
+							isPhone
+								? {}
+								: {
+										backgroundPosition:
+											index % 2 === 0
+												? ["0% 50%", "100% 100%", "50% 0%", "0% 100%", "100% 0%", "0% 50%"]
+												: ["100% 50%", "0% 0%", "100% 100%", "50% 0%", "0% 100%", "100% 50%"],
+									}
+						}
+						transition={{ duration: [13.84, 15.48, 18.99][index], ease: "easeInOut", repeat: Infinity }}
+						style={{
+							y: isMobile ? 0 : transforms[index].y,
+							scale: isMobile ? 1 : transforms[index].scale,
+							opacity: isMobile ? 1 : transforms[index].opacity,
+						}}
+						className={`relative overflow-hidden flex flex-col justify-between rounded-[2rem] p-8 pb-10 md:p-10 md:pb-12 transition-shadow ${service.glassClass} ${index === 2 ? "min-[651px]:col-span-2 min-[1001px]:col-span-1" : ""}`}
+					>
+						<div className='absolute inset-0 flex items-center justify-center select-none pointer-events-none z-0'>
+							<span
+								className={`text-[175px] md:text-[200px] font-bold leading-none bg-clip-text text-transparent bg-gradient-to-b ${service.numberClass}`}
+							>
+								{service.number}
+							</span>
+						</div>
+						<div className='relative z-10'>
+							<h3 className={`text-3xl md:text-4xl font-bold mb-2 ${service.titleClass}`}>{service.title}</h3>
+							<p className={`text-sm md:text-base font-medium mb-8 leading-snug ${service.descClass}`}>
+								{service.desc}
+							</p>
+							<ul className={`space-y-4 md:space-y-5 mb-16 ${service.bulletTextClass}`}>
+								{service.items.map((item, i) => (
+									<li key={i} className='flex items-start gap-3 font-semibold text-sm md:text-base leading-snug'>
+										<div className={`w-1.5 h-1.5 mt-2 rounded-full shrink-0 ${service.bulletIconClass}`}></div>
+										<span>{item}</span>
+									</li>
+								))}
+							</ul>
+						</div>
+						<button
+							className={`w-full relative z-20 py-3.5 rounded-full font-bold tracking-wider text-sm transition-transform hover:-translate-y-1 shadow-lg ${service.btnClass}`}
+						>
+							GET STARTED
+						</button>
+					</motion.div>
+				))}
+			</div>
+		</section>
+	);
+};
+
+const ToolsSection = () => (
+	<section
+		id='tools'
+		className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pt-16 pb-32 md:pt-24 md:pb-48 z-40 overflow-x-clip'
+	>
+		<motion.div
+			initial={{ opacity: 0, y: 20 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			viewport={{ once: true, margin: "-50px" }}
+			transition={{ duration: 0.6 }}
+			className='mb-16'
+		>
+			<div className='flex items-center gap-3 mb-4'>
+				<div className='w-6 h-[2px] bg-brandMaroon'></div>
+				<span className='text-gray-800 text-sm font-medium tracking-wide uppercase'>My Favorite Tools</span>
+			</div>
+			<h2 className='text-4xl md:text-5xl font-bold text-gray-900'>
+				<span className='text-brandMaroon italic'>Tools</span> I Use
+			</h2>
+		</motion.div>
+		<div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-y-10 gap-x-4 md:gap-x-6 justify-items-center'>
+			{toolsData.map((tool, index) => (
+				<motion.div
+					key={index}
+					initial={{ opacity: 0, scale: 0.8 }}
+					whileInView={{ opacity: 1, scale: 1 }}
+					viewport={{ once: true, margin: "-50px" }}
+					transition={{ duration: 0.4, delay: index * 0.05 }}
+					className='flex flex-col items-center gap-4 group'
+				>
+					<div className='w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.1)] flex items-center justify-center p-4 transition-transform duration-300 group-hover:-translate-y-2'>
+						<div className='w-full h-full bg-white rounded-full flex items-center justify-center text-gray-300 text-xs text-center leading-none'>
+							<Image src={tool.icon} alt={tool.name} width={60} height={60} className='object-contain' />
+						</div>
+					</div>
+					<span className='text-xs md:text-sm font-bold text-gray-800 text-center'>{tool.name}</span>
+				</motion.div>
+			))}
+		</div>
+	</section>
+);
+
+const AboutSection = () => (
+	<section id='about' className='py-16 md:py-24'>
+		<div className='flex justify-center mb-6'>
+			<div className='flex items-center gap-3'>
+				<div className='w-6 h-[1px] bg-white/60'></div>
+				<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>About Me</span>
+			</div>
+		</div>
+		<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-[45%_1fr] gap-6 items-center'>
+			<div className='relative w-full mx-auto flex justify-center mt-8 lg:mt-0'>
+				<Image
+					src='/sherAboutMe.png'
+					alt='Sheremie'
+					width={600}
+					height={600}
+					className='w-full h-auto object-contain drop-shadow-xl'
+				/>
+			</div>
+			<div className='flex flex-col gap-6 text-white text-center lg:text-left'>
+				<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
+					Who is <span className='text-brandPink italic'>Sheremie?</span>
+				</h2>
+				<p className='text-white/80 text-sm md:text-base leading-relaxed'>
+					I&apos;m Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
+					organized and on track. With experience in admin support, content management, and client coordination, I focus
+					on making day-to-day tasks easier and more manageable. I&apos;m detail-oriented, reliable, and committed to
+					delivering support that actually makes a difference.
+				</p>
+				<p className='text-white/80 text-sm md:text-base leading-relaxed'>
+					I&apos;m always improving my skills and learning better systems to provide efficient and consistent support
+					for every client I work with. Let&apos;s work together and make your workload lighter.
+				</p>
+				<div className='grid grid-cols-3 gap-4 my-4'>
+					<div>
+						<h4 className='text-3xl md:text-4xl font-bold mb-1'>400+</h4>
+						<p className='text-white/70 text-xs md:text-sm'>Projects Completed</p>
+					</div>
+					<div>
+						<h4 className='text-3xl md:text-4xl font-bold mb-1'>10+</h4>
+						<p className='text-white/70 text-xs md:text-sm'>Industry Serves</p>
+					</div>
+					<div>
+						<h4 className='text-3xl md:text-4xl font-bold mb-1'>2+</h4>
+						<p className='text-white/70 text-xs md:text-sm'>Years of Experience</p>
+					</div>
+				</div>
+				<div className='pt-4 flex justify-center lg:justify-start'>
+					<button className='bg-white hover:bg-gray-100 text-brandMaroon px-8 py-3.5 rounded-full text-sm font-bold transition-all shadow-lg hover:-translate-y-1'>
+						Work With Me
+					</button>
+				</div>
+			</div>
+		</div>
+	</section>
+);
+
+const ExperienceSection = ({ isPhone }: { isPhone: boolean }) => {
+	const experienceRef = useRef<HTMLElement>(null);
+	const { scrollYProgress } = useScroll({ target: experienceRef, offset: ["start end", "end start"] });
+
+	const expCard1X = useTransform(scrollYProgress, [0.1, 0.45, 0.55, 0.9], [-400, 0, 0, -400]);
+	const expCard2X = useTransform(scrollYProgress, [0.1, 0.45, 0.55, 0.9], [400, 0, 0, 400]);
+	const expScale = useTransform(scrollYProgress, [0.1, 0.45, 0.55, 0.9], [0.8, 1, 1, 0.8]);
+	const expOpacity = useTransform(scrollYProgress, [0.1, 0.4, 0.6, 0.9], [0, 1, 1, 0]);
+
+	return (
+		<section ref={experienceRef} id='experience' className='pt-24 md:pt-32 pb-24 md:pb-32 overflow-x-clip'>
+			<motion.div
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true, margin: "-50px" }}
+				transition={{ duration: 0.6 }}
+				className='flex flex-col items-center mb-16 md:mb-20'
+			>
+				<div className='flex items-center gap-3 mb-4'>
+					<div className='w-6 h-[1px] bg-white/60'></div>
+					<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>Education & Work</span>
+					<div className='w-6 h-[1px] bg-white/60'></div>
+				</div>
+				<h2 className='text-3xl md:text-5xl font-bold text-white text-center leading-tight'>
+					My <span className='italic text-brandPink'>Academic and</span>
+					<br /> <span className='italic text-brandPink'>Professional</span> Journey
+				</h2>
+			</motion.div>
+
+			<div className='max-w-5xl mx-auto px-6 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[73px] lg:gap-20 overflow-hidden md:overflow-visible'>
+				<motion.div
+					style={{ x: isPhone ? 0 : expCard1X, scale: isPhone ? 1 : expScale, opacity: isPhone ? 1 : expOpacity }}
+					className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95 via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-white/80 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+				>
+					<div className='flex items-center gap-4 mb-6'>
+						<div className='w-12 h-12 rounded-full bg-brandMaroon/10 flex items-center justify-center text-brandMaroon'>
+							<GraduationCap size={28} />
+						</div>
+						<h3 className='text-2xl font-bold text-gray-900'>Education</h3>
+					</div>
+					<div className='w-full h-[1.5px] bg-brandMaroon/20 mb-8'></div>
+					<div className='border-l-[1.5px] border-brandMaroon/20 ml-2 space-y-8 py-2'>
+						{educationData.map((item, i) => (
+							<div key={i} className='relative pl-6'>
+								<div className='absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brandMaroon ring-4 ring-white/50'></div>
+								<p className='text-xs text-gray-500 font-semibold tracking-wide mb-1'>{item.date}</p>
+								<h4 className='text-base md:text-lg font-bold text-gray-900 leading-tight'>{item.title}</h4>
+								<p className='text-sm text-gray-700 leading-snug whitespace-pre-line mt-1'>{item.desc}</p>
+							</div>
+						))}
+					</div>
+				</motion.div>
+
+				<motion.div
+					style={{ x: isPhone ? 0 : expCard2X, scale: isPhone ? 1 : expScale, opacity: isPhone ? 1 : expOpacity }}
+					className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95 via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-white/80 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+				>
+					<div className='flex items-center gap-4 mb-6'>
+						<div className='w-12 h-12 rounded-full bg-brandMaroon/10 flex items-center justify-center text-brandMaroon'>
+							<Briefcase size={28} />
+						</div>
+						<h3 className='text-2xl font-bold text-gray-900'>Work Experience</h3>
+					</div>
+					<div className='w-full h-[1.5px] bg-brandMaroon/20 mb-8'></div>
+					<div className='border-l-[1.5px] border-brandMaroon/20 ml-2 space-y-8 py-2'>
+						{workData.map((item, i) => (
+							<div key={i} className='relative pl-6'>
+								<div className='absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brandMaroon ring-4 ring-white/50'></div>
+								<p className='text-xs text-gray-500 font-semibold tracking-wide mb-1'>{item.date}</p>
+								<h4 className='text-base md:text-lg font-bold text-gray-900 leading-tight'>{item.title}</h4>
+								<p className='text-sm text-gray-700 leading-snug whitespace-pre-line mt-1'>{item.desc}</p>
+							</div>
+						))}
+					</div>
+				</motion.div>
+			</div>
+		</section>
+	);
+};
+
+// Represents the 2-Column Task layout
+const TaskProject = ({ work }: { work: TaskProjectData }) => (
+	<div className='w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 mb-32 md:mb-48 last:mb-0'>
+		<motion.h3
+			initial={{ opacity: 0, y: 20 }}
+			whileInView={{ opacity: 1, y: 0 }}
+			viewport={{ once: true, margin: "-50px" }}
+			transition={{ duration: 0.5 }}
+			className='text-2xl md:text-3xl font-bold italic text-center text-gray-900 mb-12'
+		>
+			{work.client}
+		</motion.h3>
+		<div className='grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16'>
+			{work.projects.map((project, pIdx) => (
+				<motion.div
+					key={pIdx}
+					initial={{ opacity: 0, y: 30 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: "-50px" }}
+					transition={{ duration: 0.5, delay: pIdx * 0.2 }}
+					className='flex flex-col items-center gap-6'
+				>
+					<div className='relative w-full aspect-[16/9] bg-gray-200 rounded-lg overflow-hidden shadow-md group'>
+						<Image src={project.image} alt='Portfolio Project' fill className='object-cover' />
+						{project.overlay && (
+							<div className='absolute inset-0 flex items-center justify-center bg-black/5 pointer-events-none'>
+								<div className='bg-brandMaroon text-white italic font-medium px-4 py-1.5 rounded shadow-lg text-sm md:text-base text-center'>
+									{project.overlay}
+								</div>
+							</div>
+						)}
+					</div>
+					<p className='text-gray-900 text-sm md:text-base leading-relaxed text-center max-w-lg font-medium'>
+						{project.desc}
+					</p>
+				</motion.div>
+			))}
+		</div>
+	</div>
+);
+
+// Represents the Fanning Gallery / Carousel
+const GraphicDesignGallery = ({ work, isDesktopLarge }: { work: GraphicDesignProject; isDesktopLarge: boolean }) => {
+	const [images, setImages] = useState<string[]>(work.images || []);
+
+	// NEW: Robust viewport listener to trigger the desktop animation when exactly 10% is visible
+	const [hasEntered, setHasEntered] = useState(false);
+
+	const [isHovered, setIsHovered] = useState(false);
+	const [hasInteracted, setHasInteracted] = useState(false);
+
+	const aspectClass = work.aspectClass || "aspect-square";
+	const deskWidthClass = work.aspectClass === "aspect-[4/5]" ? "w-[240px] lg:w-[280px]" : "w-[300px] lg:w-[350px]";
+	const mobWidthClass = work.aspectClass === "aspect-[4/5]" ? "w-[220px] md:w-[280px]" : "w-[260px] md:w-[340px]";
+
+	const handleSwap = (clickedImg: string) => {
+		setHasInteracted(true);
+		setImages((prev: string[]) => {
+			const newArr = [...prev];
+			const idx = newArr.indexOf(clickedImg);
+			if (idx === 0) return newArr;
+
+			const temp = newArr[0];
+			newArr[0] = newArr[idx];
+			newArr[idx] = temp;
+			return newArr;
+		});
+	};
+
+	return (
+		<div className='mb-32 md:mb-48 last:mb-0 flex flex-col items-center w-full'>
+			<div className='w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center'>
+				<motion.h3
+					initial={{ opacity: 0, y: 20 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, margin: "-50px" }}
+					transition={{ duration: 0.5 }}
+					className='text-3xl md:text-4xl font-bold italic text-center text-gray-900 mb-8'
+				>
+					{work.client}
+				</motion.h3>
+			</div>
+
+			{!isDesktopLarge ? (
+				// NEW: Removed the screen-breaking hack and implemented a clean 100% width container for flawless mobile overflow
+				<div className='relative w-full py-8 overflow-hidden flex'>
+					<motion.div
+						className='flex gap-4 md:gap-6 w-max'
+						animate={{ x: ["0%", "-50%"] }}
+						transition={{ duration: images.length * 4, ease: "linear", repeat: Infinity }}
+					>
+						{[...images, ...images].map((img: string, i: number) => (
+							<div
+								key={i}
+								className={`relative ${mobWidthClass} ${aspectClass} rounded-2xl overflow-hidden shadow-lg shrink-0 border-[3px] border-white bg-gray-100`}
+							>
+								<Image src={img} alt={`${work.client} design`} fill className='object-cover' />
+							</div>
+						))}
+					</motion.div>
+				</div>
+			) : (
+				<motion.div
+					// NEW: Triggers exactly when 10% of the gallery is in view, preventing the invisible opacity bug!
+					onViewportEnter={() => setHasEntered(true)}
+					viewport={{ once: true, amount: 0.1 }}
+					onMouseEnter={() => {
+						setIsHovered(true);
+						setHasInteracted(true);
+					}}
+					onMouseLeave={() => setIsHovered(false)}
+					className='relative w-full h-[500px] lg:h-[600px] flex items-center justify-center mt-6 mb-16'
+				>
+					{images.map((img: string, i: number) => {
+						const isCenter = i === 0;
+						const direction = i % 2 === 0 ? 1 : -1;
+						const step = Math.ceil(i / 2);
+
+						const maxStep = Math.max(1, Math.floor((images.length - 1) / 2));
+
+						const spreadX_rest = 40;
+						const targetX_rest = isCenter ? 0 : direction * step * spreadX_rest;
+						const targetY_rest = isCenter ? 0 : step * 3;
+						const targetRotate_rest = isCenter ? 0 : direction * step * 2;
+
+						const maxExplosion = 450;
+						const spreadX_hover = maxExplosion / maxStep;
+						const targetX_hover = isCenter ? 0 : direction * step * spreadX_hover;
+						const targetY_hover = isCenter ? -30 : step * 20;
+						const targetRotate_hover = isCenter ? 0 : direction * step * 8;
+
+						const zIndex = 50 - i;
+
+						// Manual coordinate overrides ensure the images respond instantly to clicks without resetting!
+						const currentX = !hasEntered ? 0 : isHovered ? targetX_hover : targetX_rest;
+						const currentY = !hasEntered ? (isCenter ? 200 : 0) : isHovered ? targetY_hover : targetY_rest;
+						const currentScale = !hasEntered ? (isCenter ? 1 : 0.8) : isHovered ? 1.05 : 1;
+						const currentRotate = !hasEntered
+							? isCenter
+								? -5
+								: 0
+							: isHovered
+								? targetRotate_hover
+								: targetRotate_rest;
+						const currentOpacity = !hasEntered ? 0 : 1;
+
+						return (
+							<motion.div
+								layout
+								key={img}
+								onClick={() => handleSwap(img)}
+								initial={{
+									y: isCenter ? 200 : 0,
+									x: 0,
+									opacity: 0,
+									scale: isCenter ? 1 : 0.8,
+									rotate: isCenter ? -5 : 0,
+								}}
+								animate={{
+									x: currentX,
+									y: currentY,
+									scale: currentScale,
+									rotate: currentRotate,
+									opacity: currentOpacity,
+								}}
+								transition={{
+									duration: isHovered ? 0.5 : 0.8,
+									type: "spring",
+									bounce: isHovered ? 0.3 : 0.4,
+									delay: !hasEntered || hasInteracted ? 0 : isCenter ? 0.3 : 0.8 + i * 0.05,
+								}}
+								className={`absolute ${deskWidthClass} ${aspectClass} rounded-xl overflow-hidden shadow-2xl border-[3px] border-white bg-gray-100 cursor-pointer`}
+								style={{ zIndex }}
+							>
+								<Image src={img} alt={`${work.client} design`} fill className='object-cover' />
+							</motion.div>
+						);
+					})}
+				</motion.div>
+			)}
+
+			<div className='w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center'>
+				{work.subtitle && (
+					<motion.h4
+						initial={{ opacity: 0, y: 10 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-50px" }}
+						transition={{ duration: 0.5, delay: 0.1 }}
+						className='text-lg md:text-xl font-bold text-gray-800 text-center mt-12 mb-4'
+					>
+						{work.subtitle}
+					</motion.h4>
+				)}
+				{work.desc && (
+					<motion.p
+						initial={{ opacity: 0, y: 10 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-50px" }}
+						transition={{ duration: 0.5, delay: 0.2 }}
+						className='text-sm md:text-base text-gray-600 text-center max-w-3xl leading-relaxed'
+					>
+						{work.desc}
+					</motion.p>
+				)}
+			</div>
+		</div>
+	);
+};
+
+// --- TESTIMONIALS SECTION ---
+const TestimonialsSection = () => {
+	return (
+		<section id='testimonials' className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-24 md:py-32'>
+			<motion.div
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true, margin: "-50px" }}
+				transition={{ duration: 0.6 }}
+				className='flex flex-col mb-16 md:mb-20'
+			>
+				<div className='flex items-center gap-3 mb-4'>
+					<div className='w-6 h-[2px] bg-white/60'></div>
+					<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>Testimonials</span>
+				</div>
+				<h2 className='text-4xl md:text-5xl font-bold text-white leading-tight'>
+					What Clients <span className='italic text-brandPink'>Say</span>
+				</h2>
+			</motion.div>
+
+			<div className='grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 lg:gap-12 items-stretch'>
+				{testimonialsData.map((test, i) => (
+					<motion.div
+						key={i}
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-50px" }}
+						transition={{ duration: 0.5, delay: i * 0.2 }}
+						className='relative group w-full h-full'
+					>
+						<div className='absolute inset-0 border-[3px] border-white/50 rounded-[2rem] transform -rotate-[13deg] transition-transform duration-300 group-hover:-rotate-[8deg]'></div>
+
+						<div className='relative bg-white rounded-[2rem] p-8 md:p-10 shadow-xl flex flex-col items-center text-center h-full'>
+							<h4 className='text-lg md:text-xl font-bold text-gray-900'>{test.name}</h4>
+							<p className='text-xs md:text-sm text-gray-500 mb-4'>{test.company}</p>
+
+							<div className='flex items-center gap-1 mb-6 text-brandMaroon'>
+								{[...Array(5)].map((_, starIdx) => (
+									<Star key={starIdx} size={18} fill='currentColor' />
+								))}
+							</div>
+
+							<p className='text-sm md:text-base text-gray-700 italic leading-relaxed font-medium'>{test.quote}</p>
+						</div>
+					</motion.div>
+				))}
+			</div>
+		</section>
+	);
+};
+
+// --- NEW CONTACT / FOOTER SECTION ---
+const ContactSection = () => {
+	return (
+		<section
+			id='contact'
+			className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pt-24 pb-12 z-40 text-white'
+		>
+			<div className='flex flex-col mb-12 md:mb-16'>
+				<div className='flex items-center gap-3 mb-4'>
+					<div className='w-6 h-[1px] bg-white/60'></div>
+					<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>Contact</span>
+				</div>
+				<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
+					Let&apos;s <span className='italic text-brandPink'>Connect!</span>
+				</h2>
+			</div>
+
+			<hr className='border-white/20 mb-12 md:mb-16' />
+
+			<div className='grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8'>
+				<div className='flex flex-col gap-6'>
+					<div className='flex items-center gap-3'>
+						<div className='w-10 h-10 bg-white rounded-full flex items-center justify-center text-brandMaroon font-serif font-bold text-xl italic'>
+							SM
+						</div>
+						<span className='text-2xl font-semibold'>Sheremie</span>
+					</div>
+					<p className='text-sm md:text-base leading-relaxed text-white/90 font-medium'>
+						Need help managing your tasks and staying organized? I&apos;m here to support you! Let&apos;s work together
+						to make your day easier.
+					</p>
+					<p className='text-sm italic text-white/80 leading-relaxed font-medium'>
+						Based in the Philippines (GMT+8)
+						<br />
+						Open to international clients
+						<br />
+						Replies within 24 hours
+					</p>
+					<div className='flex items-center gap-4 mt-2'>
+						{[Phone, CircleFadingPlus, CircleFadingPlus, Mail].map((Icon, i) => (
+							<a
+								key={i}
+								href='#'
+								className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
+							>
+								<Icon size={16} />
+							</a>
+						))}
+					</div>
+				</div>
+
+				<div className='flex flex-col gap-4 md:pl-12'>
+					<h4 className='text-lg font-semibold text-white/80 mb-2'>Navigation</h4>
+					{["Home", "Services", "About Me", "Portfolio", "Testimonials"].map((link) => (
+						<a
+							key={link}
+							href={`#${link.toLowerCase().replace(" ", "-")}`}
+							className='text-sm md:text-base font-medium hover:text-brandPink transition-colors'
+						>
+							{link}
+						</a>
+					))}
+				</div>
+
+				<div className='flex flex-col gap-4'>
+					<h4 className='text-lg font-semibold text-white/80 mb-2'>Contact</h4>
+					<p className='text-sm md:text-base font-medium'>+63 961 482 3645</p>
+					<p className='text-sm md:text-base font-medium'>sheshesheremie</p>
+					<p className='text-sm md:text-base font-medium'>Sheremie B. Miranda</p>
+					<p className='text-sm md:text-base font-medium'>sheremiebmiranda@gmail.com</p>
+				</div>
+			</div>
+
+			<div className='mt-24 text-center text-xs font-medium text-white/60'>
+				© 2026 Sheremie B. Miranda. All Rights Reserved.
+			</div>
+		</section>
+	);
+};
+
+// ==========================================
+// 4. MAIN PAGE COMPONENT
+// ==========================================
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isMobile, setIsMobile] = useState(false);
 	const [isPhone, setIsPhone] = useState(false);
+	const [isDesktopLarge, setIsDesktopLarge] = useState(false);
 
 	useEffect(() => {
-		const checkMobile = () => {
+		const checkBreakpoints = () => {
 			setIsMobile(window.innerWidth < 1024);
 			setIsPhone(window.innerWidth < 768);
+			setIsDesktopLarge(window.innerWidth >= 1300);
 		};
-		checkMobile();
-		window.addEventListener("resize", checkMobile);
-		return () => window.removeEventListener("resize", checkMobile);
+		checkBreakpoints();
+		window.addEventListener("resize", checkBreakpoints);
+		return () => window.removeEventListener("resize", checkBreakpoints);
 	}, []);
 
 	const mouseX = useMotionValue(0);
@@ -180,75 +876,29 @@ export default function Home() {
 		return () => clearTimeout(timer);
 	}, []);
 
-	const servicesRef = useRef<HTMLElement>(null);
-
-	const { scrollYProgress: servicesScroll } = useScroll({
-		target: servicesRef,
-		offset: ["start end", "end start"],
-	});
-
-	const r1 = isMobile ? [0.02, 0.2, 0.6, 0.99] : [0.0, 0.3, 0.7, 0.96];
-	const r2 = isMobile ? [0.04, 0.3, 0.7, 0.99] : [0.0, 0.35, 0.72, 0.98];
-	const r3 = isMobile ? [0.07, 0.4, 0.88, 1.0] : [0.0, 0.38, 0.75, 1.0];
-
-	const card1Y = useTransform(servicesScroll, r1, [400, 0, 0, -400]);
-	const card2Y = useTransform(servicesScroll, r2, [400, 0, 0, -500]);
-	const card3Y = useTransform(servicesScroll, r3, [400, 0, 0, -400]);
-
-	const card1Scale = useTransform(servicesScroll, r1, [0.8, 1, 1, 0.8]);
-	const card2Scale = useTransform(servicesScroll, r2, [0.8, 1, 1, 0.8]);
-	const card3Scale = useTransform(servicesScroll, r3, [0.8, 1, 1, 0.8]);
-
-	const op1 = isMobile ? [0.1, 0.4, 0.9, 0.95] : [0.1, 0.3, 0.75, 0.85];
-	const op2 = isMobile ? [0.15, 0.45, 0.92, 0.98] : [0.15, 0.4, 0.8, 0.9];
-	const op3 = isMobile ? [0.2, 0.5, 0.95, 1.0] : [0.2, 0.5, 0.55, 0.95];
-
-	const card1Opacity = useTransform(servicesScroll, op1, [0, 1, 1, 0]);
-	const card2Opacity = useTransform(servicesScroll, op2, [0, 1, 1, 0]);
-	const card3Opacity = useTransform(servicesScroll, op3, [0, 1, 1, 0]);
-
-	const cardYTransforms = [card1Y, card2Y, card3Y];
-	const cardScales = [card1Scale, card2Scale, card3Scale];
-	const cardOpacities = [card1Opacity, card2Opacity, card3Opacity];
-
-	const experienceRef = useRef<HTMLElement>(null);
-
-	const { scrollYProgress: expScroll } = useScroll({
-		target: experienceRef,
-		offset: ["start end", "end start"],
-	});
-
-	const expCard1X = useTransform(expScroll, [0.1, 0.45, 0.55, 0.9], [-400, 0, 0, -400]);
-	const expCard2X = useTransform(expScroll, [0.1, 0.45, 0.55, 0.9], [400, 0, 0, 400]);
-	const expScale = useTransform(expScroll, [0.1, 0.45, 0.55, 0.9], [0.8, 1, 1, 0.8]);
-	const expOpacity = useTransform(expScroll, [0.1, 0.4, 0.6, 0.9], [0, 1, 1, 0]);
-
 	const helloVariants = {
 		hidden: { opacity: 0 },
 		visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.2 } },
 	};
-
 	const titleVariants = {
 		hidden: { opacity: 0 },
 		visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 1.6 } },
 	};
-
 	const fadeVariants = {
 		hidden: { opacity: 0, y: 10 },
 		visible: { opacity: 1, y: 0, transition: { delay: 3.6, duration: 0.8 } },
 	};
-
 	const letterVariants = {
 		hidden: { opacity: 0, y: 10 },
 		visible: { opacity: 1, y: 0 },
 	};
 
 	return (
+		// Globally prevents horizontal scrolling for all the fanning animations
 		<div
 			className='min-h-screen flex flex-col overflow-x-hidden'
 			style={{ backgroundImage: 'url("/prism.svg")', backgroundRepeat: "repeat" }}
 		>
-			{/* LOADING SCREEN */}
 			<AnimatePresence>
 				{isLoading && (
 					<motion.div
@@ -268,13 +918,11 @@ export default function Home() {
 
 			<Navbar />
 
-			{/* --- HERO SECTION --- */}
 			<main
 				id='home'
 				onMouseMove={handleMouseMove}
 				className='relative pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-48 px-6 md:px-12 lg:px-24'
 			>
-				{/* Adjusted the desktop layout to 55% / 45% ratio */}
 				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4 lg:gap-12 z-40 relative pb-[350px] md:pb-[340px] lg:pb-[140px]'>
 					<div className='flex flex-col gap-4 md:gap-6 w-full mt-2 md:mt-0 pr-0 lg:pr-8'>
 						<motion.h2
@@ -332,9 +980,7 @@ export default function Home() {
 								I&apos;m Sheremie, I help you stay organized, manage your tasks, and keep your business running smoothly
 								so you can focus on what matters most.
 							</p>
-
 							<p className='text-xs md:text-sm text-gray-500 italic'>Currently available for 2-3 new clients</p>
-
 							<div className='pt-2'>
 								<button className='bg-brandMaroon hover:bg-[#600f1e] text-white px-6 py-3 md:px-8 md:py-3.5 rounded-full text-sm md:text-base font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1'>
 									Hire Me!
@@ -345,11 +991,12 @@ export default function Home() {
 				</div>
 
 				<div className='absolute bottom-0 right-0 lg:right-[5%] w-full lg:w-1/2 h-full pointer-events-none flex items-end justify-center z-20'>
+					{/* UPDATED: Scaled down the entire image wrapper sizes by ~10% for a cleaner fit! */}
 					<motion.div
 						initial={{ opacity: 0, y: 50 }}
 						animate={!isLoading ? { opacity: 1, y: 0 } : {}}
 						transition={{ duration: 0.8, delay: 0.4 }}
-						className='relative z-10 w-[75%] sm:w-[65%] max-w-[350px] lg:max-w-none lg:w-[85%] xl:w-[70%] 2xl:w-[65%]'
+						className='relative z-10 w-[65%] sm:w-[55%] max-w-[350px] lg:max-w-none lg:w-[75%] xl:w-[60%] 2xl:w-[55%]'
 					>
 						<div className='absolute top-[10%] right-[5%] w-full aspect-square -z-10 text-brandPink pointer-events-none'>
 							<svg
@@ -364,7 +1011,6 @@ export default function Home() {
 								/>
 							</svg>
 						</div>
-
 						<Image
 							src='/sheremie.png'
 							alt='Sheremie - Virtual Assistant'
@@ -373,7 +1019,6 @@ export default function Home() {
 							className='w-full h-auto object-contain object-bottom pointer-events-auto'
 							priority
 						/>
-
 						<motion.div
 							style={{ x: tooltip1X, y: tooltip1Y }}
 							className='absolute right-[2%] md:right-0 lg:right-[-2%] bottom-[45%] md:bottom-[40%] z-30 pointer-events-auto'
@@ -387,7 +1032,6 @@ export default function Home() {
 								<div className='absolute top-1/2 -translate-y-1/2 -left-1.5 md:-left-2 w-0 h-0 border-y-[4px] md:border-y-[6px] border-y-transparent border-r-[6px] md:border-r-[8px] border-r-brandPink'></div>
 							</motion.div>
 						</motion.div>
-
 						<motion.div
 							style={{ x: tooltip2X, y: tooltip2Y }}
 							className='absolute left-[2%] md:left-0 lg:left-[-4%] bottom-[15%] md:bottom-[20%] z-30 pointer-events-auto'
@@ -410,288 +1054,18 @@ export default function Home() {
 				</div>
 			</main>
 
-			{/* --- SERVICES SECTION --- */}
-			<section
-				ref={servicesRef}
-				id='services'
-				className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-24 md:py-32 z-40'
-			>
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: "-100px" }}
-					transition={{ duration: 0.6 }}
-					className='mb-16'
-				>
-					<div className='flex items-center gap-3 mb-4'>
-						<div className='w-6 h-[2px] bg-brandMaroon'></div>
-						<span className='text-gray-800 text-sm font-medium tracking-wide uppercase'>Services</span>
-					</div>
-					<h2 className='text-4xl md:text-5xl font-bold text-gray-900'>
-						<span className='text-brandMaroon italic'>Services</span> I Provide
-					</h2>
-				</motion.div>
+			<ServicesSection isMobile={isMobile} isPhone={isPhone} />
+			<ToolsSection />
 
-				<div className='grid grid-cols-1 min-[651px]:grid-cols-2 min-[1001px]:grid-cols-3 gap-6 md:gap-8'>
-					{servicesData.map((service, index) => (
-						<motion.div
-							key={index}
-							animate={
-								isPhone
-									? {}
-									: {
-											backgroundPosition:
-												index % 2 === 0
-													? ["0% 50%", "100% 100%", "50% 0%", "0% 100%", "100% 0%", "0% 50%"]
-													: ["100% 50%", "0% 0%", "100% 100%", "50% 0%", "0% 100%", "100% 50%"],
-										}
-							}
-							transition={{
-								duration: [13.84, 15.48, 18.99][index],
-								ease: "easeInOut",
-								repeat: Infinity,
-							}}
-							style={{
-								y: isMobile ? 0 : cardYTransforms[index],
-								scale: isMobile ? 1 : cardScales[index],
-								opacity: isMobile ? 1 : cardOpacities[index],
-							}}
-							className={`relative overflow-hidden flex flex-col justify-between rounded-[2rem] p-8 pb-10 md:p-10 md:pb-12 transition-shadow 
-                ${service.glassClass} 
-                ${index === 2 ? "min-[651px]:col-span-2 min-[1001px]:col-span-1" : ""}
-              `}
-						>
-							<div className='absolute inset-0 flex items-center justify-center select-none pointer-events-none z-0'>
-								<span
-									className={`text-[175px] md:text-[200px] font-bold leading-none bg-clip-text text-transparent bg-gradient-to-b ${service.numberClass}`}
-								>
-									{service.number}
-								</span>
-							</div>
-
-							<div className='relative z-10'>
-								<h3 className={`text-3xl md:text-4xl font-bold mb-2 ${service.titleClass}`}>{service.title}</h3>
-								<p className={`text-sm md:text-base font-medium mb-8 leading-snug ${service.descClass}`}>
-									{service.desc}
-								</p>
-
-								<ul className={`space-y-4 md:space-y-5 mb-16 ${service.bulletTextClass}`}>
-									{service.items.map((item, i) => (
-										<li key={i} className='flex items-start gap-3 font-semibold text-sm md:text-base leading-snug'>
-											<div className={`w-1.5 h-1.5 mt-2 rounded-full shrink-0 ${service.bulletIconClass}`}></div>
-											<span>{item}</span>
-										</li>
-									))}
-								</ul>
-							</div>
-
-							<button
-								className={`w-full relative z-20 py-3.5 rounded-full font-bold tracking-wider text-sm transition-transform hover:-translate-y-1 shadow-lg ${service.btnClass}`}
-							>
-								GET STARTED
-							</button>
-						</motion.div>
-					))}
-				</div>
-			</section>
-
-			{/* --- TOOLS SECTION --- */}
-			<section
-				id='tools'
-				className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pt-16 pb-32 md:pt-24 md:pb-48 z-40'
-			>
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, margin: "-50px" }}
-					transition={{ duration: 0.6 }}
-					className='mb-16'
-				>
-					<div className='flex items-center gap-3 mb-4'>
-						<div className='w-6 h-[2px] bg-brandMaroon'></div>
-						<span className='text-gray-800 text-sm font-medium tracking-wide uppercase'>My Favorite Tools</span>
-					</div>
-					<h2 className='text-4xl md:text-5xl font-bold text-gray-900'>
-						<span className='text-brandMaroon italic'>Tools</span> I Use
-					</h2>
-				</motion.div>
-
-				<div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-y-10 gap-x-4 md:gap-x-6 justify-items-center'>
-					{toolsData.map((tool, index) => (
-						<motion.div
-							key={index}
-							initial={{ opacity: 0, scale: 0.8 }}
-							whileInView={{ opacity: 1, scale: 1 }}
-							viewport={{ once: true, margin: "-50px" }}
-							transition={{ duration: 0.4, delay: index * 0.05 }}
-							className='flex flex-col items-center gap-4 group'
-						>
-							<div className='w-20 h-20 md:w-24 md:h-24 bg-white rounded-full shadow-[0_8px_25px_rgba(0,0,0,0.1)] flex items-center justify-center p-4 transition-transform duration-300 group-hover:-translate-y-2'>
-								<div className='w-full h-full bg-white rounded-full flex items-center justify-center text-gray-300 text-xs text-center leading-none'>
-									<Image src={tool.icon} alt={tool.name} width={60} height={60} className='object-contain' />
-								</div>
-							</div>
-							<span className='text-xs md:text-sm font-bold text-gray-800 text-center'>{tool.name}</span>
-						</motion.div>
-					))}
-				</div>
-			</section>
-
-			{/* --- WRAPPER FOR MAROON BACKGROUND --- */}
 			<div
-				className='relative w-full bg-[#6b1626] overflow-hidden z-40'
+				className='relative w-full bg-[#6b1626] z-40'
 				style={{ backgroundImage: 'url("/prismMaroon.svg")', backgroundRepeat: "repeat" }}
 			>
-				{/* --- ABOUT ME SECTION --- */}
-				<section id='about' className='py-16 md:py-24'>
-					<div className='flex justify-center mb-6'>
-						<div className='flex items-center gap-3'>
-							<div className='w-6 h-[1px] bg-white/60'></div>
-							<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>About Me</span>
-						</div>
-					</div>
-
-					<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-[45%_1fr] gap-6 items-center'>
-						<div className='relative w-full mx-auto flex justify-center mt-8 lg:mt-0'>
-							<Image
-								src='/sherAboutMe.png'
-								alt='Sheremie'
-								width={600}
-								height={600}
-								className='w-full h-auto object-contain drop-shadow-xl'
-							/>
-						</div>
-
-						<div className='flex flex-col gap-6 text-white text-center lg:text-left'>
-							<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
-								Who is <span className='text-brandPink italic'>Sheremie?</span>
-							</h2>
-
-							<p className='text-white/80 text-sm md:text-base leading-relaxed'>
-								I&apos;m Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
-								organized and on track. With experience in admin support, content management, and client coordination, I
-								focus on making day-to-day tasks easier and more manageable. I&apos;m detail-oriented, reliable, and
-								committed to delivering support that actually makes a difference.
-							</p>
-
-							<p className='text-white/80 text-sm md:text-base leading-relaxed'>
-								I&apos;m always improving my skills and learning better systems to provide efficient and consistent
-								support for every client I work with. Let&apos;s work together and make your workload lighter.
-							</p>
-
-							<div className='grid grid-cols-3 gap-4 my-4'>
-								<div>
-									<h4 className='text-3xl md:text-4xl font-bold mb-1'>400+</h4>
-									<p className='text-white/70 text-xs md:text-sm'>Projects Completed</p>
-								</div>
-								<div>
-									<h4 className='text-3xl md:text-4xl font-bold mb-1'>10+</h4>
-									<p className='text-white/70 text-xs md:text-sm'>Industry Serves</p>
-								</div>
-								<div>
-									<h4 className='text-3xl md:text-4xl font-bold mb-1'>2+</h4>
-									<p className='text-white/70 text-xs md:text-sm'>Years of Experience</p>
-								</div>
-							</div>
-
-							<div className='pt-4 flex justify-center lg:justify-start'>
-								<button className='bg-white hover:bg-gray-100 text-brandMaroon px-8 py-3.5 rounded-full text-sm font-bold transition-all shadow-lg hover:-translate-y-1'>
-									Work With Me
-								</button>
-							</div>
-						</div>
-					</div>
-				</section>
-
-				{/* --- EDUCATION & WORK EXPERIENCE SECTION --- */}
-				<section ref={experienceRef} id='experience' className='pt-24 md:pt-32 pb-24 md:pb-32'>
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true, margin: "-50px" }}
-						transition={{ duration: 0.6 }}
-						className='flex flex-col items-center mb-16 md:mb-20'
-					>
-						<div className='flex items-center gap-3 mb-4'>
-							<div className='w-6 h-[1px] bg-white/60'></div>
-							<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>Education & Work</span>
-							<div className='w-6 h-[1px] bg-white/60'></div>
-						</div>
-						<h2 className='text-3xl md:text-5xl font-bold text-white text-center leading-tight'>
-							My <span className='italic text-brandPink'>Academic and</span>
-							<br /> <span className='italic text-brandPink'>Professional</span> Journey
-						</h2>
-					</motion.div>
-
-					<div className='max-w-5xl mx-auto px-6 md:px-12 lg:px-16 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-[73px] lg:gap-20 overflow-hidden md:overflow-visible'>
-						{/* Education Card */}
-						<motion.div
-							style={{
-								x: isPhone ? 0 : expCard1X,
-								scale: isPhone ? 1 : expScale,
-								opacity: isPhone ? 1 : expOpacity,
-							}}
-							className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95 via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-white/80 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
-						>
-							<div className='flex items-center gap-4 mb-6'>
-								<div className='w-12 h-12 rounded-full bg-brandMaroon/10 flex items-center justify-center text-brandMaroon'>
-									<GraduationCap size={28} />
-								</div>
-								<h3 className='text-2xl font-bold text-gray-900'>Education</h3>
-							</div>
-
-							<div className='w-full h-[1.5px] bg-brandMaroon/20 mb-8'></div>
-
-							<div className='border-l-[1.5px] border-brandMaroon/20 ml-2 space-y-8 py-2'>
-								{educationData.map((item, i) => (
-									<div key={i} className='relative pl-6'>
-										<div className='absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brandMaroon ring-4 ring-white/50'></div>
-										<p className='text-xs text-gray-500 font-semibold tracking-wide mb-1'>{item.date}</p>
-										<h4 className='text-base md:text-lg font-bold text-gray-900 leading-tight'>{item.title}</h4>
-										<p className='text-sm text-gray-700 leading-snug whitespace-pre-line mt-1'>{item.desc}</p>
-									</div>
-								))}
-							</div>
-						</motion.div>
-
-						{/* Work Experience Card */}
-						<motion.div
-							style={{
-								x: isPhone ? 0 : expCard2X,
-								scale: isPhone ? 1 : expScale,
-								opacity: isPhone ? 1 : expOpacity,
-							}}
-							className='relative overflow-hidden rounded-[2rem] p-8 md:p-10 bg-gradient-to-br from-white/95 via-white/80 to-white/90 backdrop-blur-xl border-[3px] border-white/80 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
-						>
-							<div className='flex items-center gap-4 mb-6'>
-								<div className='w-12 h-12 rounded-full bg-brandMaroon/10 flex items-center justify-center text-brandMaroon'>
-									<Briefcase size={28} />
-								</div>
-								<h3 className='text-2xl font-bold text-gray-900'>Work Experience</h3>
-							</div>
-
-							<div className='w-full h-[1.5px] bg-brandMaroon/20 mb-8'></div>
-
-							<div className='border-l-[1.5px] border-brandMaroon/20 ml-2 space-y-8 py-2'>
-								{workData.map((item, i) => (
-									<div key={i} className='relative pl-6'>
-										<div className='absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brandMaroon ring-4 ring-white/50'></div>
-										<p className='text-xs text-gray-500 font-semibold tracking-wide mb-1'>{item.date}</p>
-										<h4 className='text-base md:text-lg font-bold text-gray-900 leading-tight'>{item.title}</h4>
-										<p className='text-sm text-gray-700 leading-snug whitespace-pre-line mt-1'>{item.desc}</p>
-									</div>
-								))}
-							</div>
-						</motion.div>
-					</div>
-				</section>
+				<AboutSection />
+				<ExperienceSection isPhone={isPhone} />
 			</div>
 
-			{/* --- PORTFOLIO SECTION (Tasks) --- */}
-			<section
-				id='portfolio'
-				className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pt-24 pb-24 mb-32 md:mb-48 z-40'
-			>
+			<section id='portfolio' className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pt-24 z-40'>
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -707,135 +1081,27 @@ export default function Home() {
 						My Latest <span className='text-brandMaroon italic'>Tasks/Projects</span>
 					</h2>
 				</motion.div>
-
-				{portfolioData.map((clientData, idx) => (
-					<div key={idx} className='mb-24 last:mb-0'>
-						<motion.h3
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true, margin: "-50px" }}
-							transition={{ duration: 0.5 }}
-							className='text-2xl md:text-3xl font-bold italic text-center text-gray-900 mb-12'
-						>
-							{clientData.client}
-						</motion.h3>
-
-						<div className='grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16'>
-							{clientData.projects.map((project, pIdx) => (
-								<motion.div
-									key={pIdx}
-									initial={{ opacity: 0, y: 30 }}
-									whileInView={{ opacity: 1, y: 0 }}
-									viewport={{ once: true, margin: "-50px" }}
-									transition={{ duration: 0.5, delay: pIdx * 0.2 }}
-									className='flex flex-col items-center gap-6'
-								>
-									<div className='relative w-full aspect-[16/9] bg-gray-200 rounded-lg overflow-hidden shadow-md group'>
-										<Image src={project.image} alt='Portfolio Project' fill className='object-cover' />
-										<div className='absolute inset-0 flex items-center justify-center bg-black/5 pointer-events-none'>
-											<div className='bg-brandMaroon text-white italic font-medium px-4 py-1.5 rounded shadow-lg text-sm md:text-base text-center'>
-												{project.overlay}
-											</div>
-										</div>
-									</div>
-
-									<p className='text-gray-900 text-sm md:text-base leading-relaxed text-center max-w-lg font-medium'>
-										{project.desc}
-									</p>
-								</motion.div>
-							))}
-						</div>
-					</div>
-				))}
 			</section>
 
-			{/* --- GRAPHIC DESIGN PORTFOLIO SECTION (Fanning Stack Animation) --- */}
-			<section className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pb-24 md:pb-48 z-40'>
-				{graphicDesignData.map((work, idx) => (
-					<div key={idx} className='mb-32 md:mb-48 last:mb-0'>
-						<motion.h3
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true, margin: "-50px" }}
-							transition={{ duration: 0.5 }}
-							className='text-3xl md:text-4xl font-bold italic text-center text-gray-900 mb-4'
-						>
-							{work.client}
-						</motion.h3>
+			{allProjectsData.map((project, idx) => {
+				if (project.type === "tasks") {
+					return <TaskProject key={idx} work={project as TaskProjectData} />;
+				}
+				if (project.type === "gallery") {
+					return (
+						<GraphicDesignGallery key={idx} work={project as GraphicDesignProject} isDesktopLarge={isDesktopLarge} />
+					);
+				}
+				return null;
+			})}
 
-						<motion.div
-							initial='hidden'
-							whileInView='rest'
-							whileHover='containerHover'
-							viewport={{ once: true, margin: "-100px" }}
-							className='relative w-full h-[400px] sm:h-[500px] lg:h-[600px] flex items-center justify-center mt-6 mb-12 md:mt-8 md:mb-16'
-						>
-							{work.images.map((img, i) => {
-								const isCenter = i === 0;
-								const direction = i % 2 === 0 ? 1 : -1;
-								const step = Math.ceil(i / 2);
-
-								const maxStep = Math.max(1, Math.floor(work.images.length / 2));
-
-								const baseMaxSpread = isPhone ? 100 : isMobile ? 220 : 400;
-								const hoverMaxSpread = isPhone ? 130 : isMobile ? 320 : 550;
-
-								const spreadX_rest = baseMaxSpread / maxStep;
-								const spreadX_hover = hoverMaxSpread / maxStep;
-
-								const targetX_rest = isCenter ? 0 : direction * step * spreadX_rest;
-								const targetX_hover = isCenter ? 0 : direction * step * spreadX_hover;
-
-								const targetY_rest = isCenter ? 0 : step * 15;
-								const targetY_hover = isCenter ? -10 : step * 5;
-
-								const targetRotate_rest = isCenter ? 0 : direction * step * 5;
-								const targetRotate_hover = isCenter ? 0 : direction * step * 2;
-
-								const zIndex = 50 - i;
-
-								return (
-									<motion.div
-										key={i}
-										variants={{
-											hidden: isCenter
-												? { y: 300, opacity: 0, rotate: -5 }
-												: { x: 0, y: 0, opacity: 0, scale: 0.8, rotate: 0 },
-											rest: {
-												x: targetX_rest,
-												y: targetY_rest,
-												opacity: 1,
-												scale: 1,
-												rotate: targetRotate_rest,
-												transition: {
-													duration: 0.8,
-													type: "spring",
-													bounce: 0.4,
-													delay: isCenter ? 0 : 0.5 + i * 0.05,
-												},
-											},
-											containerHover: {
-												x: targetX_hover,
-												y: targetY_hover,
-												opacity: 1,
-												scale: 1,
-												rotate: targetRotate_hover,
-												transition: { duration: 0.4, type: "spring", bounce: 0.2 },
-											},
-										}}
-										// Removed zIndex modification on hover to preserve the static stacking order!
-										whileHover={{ scale: 1.15, y: targetY_hover - 20, transition: { duration: 0.2 } }}
-										className='absolute w-[200px] sm:w-[250px] md:w-[300px] lg:w-[350px] aspect-square rounded-xl overflow-hidden shadow-2xl border-4 border-white bg-white cursor-pointer'
-										style={{ zIndex }}
-									>
-										<Image src={img} alt={`${work.client} design ${i + 1}`} fill className='object-cover' />
-									</motion.div>
-								);
-							})}
-						</motion.div>
-					</div>
-				))}
-			</section>
+			<div
+				className='relative w-full bg-[#6b1626] z-40'
+				style={{ backgroundImage: 'url("/prismMaroon.svg")', backgroundRepeat: "repeat" }}
+			>
+				<TestimonialsSection />
+				<ContactSection />
+			</div>
 		</div>
 	);
 }

@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
 	return (
 		// scroll-smooth enables smooth sliding between single-page sections
-		<html lang='en' className='scroll-smooth'>
+		<html lang='en' className='scroll-smooth snap-y snap-proximity'>
 			<body className={montserrat.className}>{children}</body>
 		</html>
 	);
