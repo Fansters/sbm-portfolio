@@ -1,10 +1,10 @@
 "use client";
 
 import Navbar from "@/app/components/Navbar";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useScroll } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useScroll, useInView } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
-import { GraduationCap, Briefcase, Star, Phone, CircleFadingPlus, Mail } from "lucide-react";
+import { GraduationCap, Briefcase, Star } from "lucide-react";
 
 // ==========================================
 // 1. TYPE DEFINITIONS
@@ -169,6 +169,12 @@ const allProjectsData: ProjectData[] = [
 			"/portfolio/ez3.jpeg",
 			"/portfolio/ez4.jpeg",
 			"/portfolio/ez5.jpeg",
+			"/portfolio/ez6.jpeg",
+			"/portfolio/ez7.jpeg",
+			"/portfolio/ez8.jpeg",
+			"/portfolio/ez9.jpeg",
+			"/portfolio/ez10.jpeg",
+			"/portfolio/ez11.jpeg",
 		],
 	},
 	{
@@ -259,7 +265,8 @@ const ServicesSection = ({ isMobile, isPhone }: { isMobile: boolean; isPhone: bo
 				</h2>
 			</motion.div>
 
-			<div className='grid grid-cols-1 min-[651px]:grid-cols-2 min-[1001px]:grid-cols-3 gap-6 md:gap-8'>
+			{/* Grid updated: md:grid-cols-2 lg:grid-cols-3. Index 2 (3rd item) spans 2 columns on tablet! */}
+			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8'>
 				{servicesData.map((service, index) => (
 					<motion.div
 						key={index}
@@ -279,7 +286,7 @@ const ServicesSection = ({ isMobile, isPhone }: { isMobile: boolean; isPhone: bo
 							scale: isMobile ? 1 : transforms[index].scale,
 							opacity: isMobile ? 1 : transforms[index].opacity,
 						}}
-						className={`relative overflow-hidden flex flex-col justify-between rounded-[2rem] p-8 pb-10 md:p-10 md:pb-12 transition-shadow ${service.glassClass} ${index === 2 ? "min-[651px]:col-span-2 min-[1001px]:col-span-1" : ""}`}
+						className={`relative overflow-hidden flex flex-col justify-between rounded-[2rem] p-8 pb-10 md:p-10 md:pb-12 transition-shadow ${service.glassClass} ${index === 2 ? "md:col-span-2 lg:col-span-1" : ""}`}
 					>
 						<div className='absolute inset-0 flex items-center justify-center select-none pointer-events-none z-0'>
 							<span
@@ -492,7 +499,6 @@ const ExperienceSection = ({ isPhone }: { isPhone: boolean }) => {
 	);
 };
 
-// Represents the 2-Column Task layout
 const TaskProject = ({ work }: { work: TaskProjectData }) => (
 	<div className='w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 mb-32 md:mb-48 last:mb-0'>
 		<motion.h3
@@ -533,13 +539,9 @@ const TaskProject = ({ work }: { work: TaskProjectData }) => (
 	</div>
 );
 
-// Represents the Fanning Gallery / Carousel
 const GraphicDesignGallery = ({ work, isDesktopLarge }: { work: GraphicDesignProject; isDesktopLarge: boolean }) => {
 	const [images, setImages] = useState<string[]>(work.images || []);
-
-	// NEW: Robust viewport listener to trigger the desktop animation when exactly 10% is visible
 	const [hasEntered, setHasEntered] = useState(false);
-
 	const [isHovered, setIsHovered] = useState(false);
 	const [hasInteracted, setHasInteracted] = useState(false);
 
@@ -563,21 +565,33 @@ const GraphicDesignGallery = ({ work, isDesktopLarge }: { work: GraphicDesignPro
 
 	return (
 		<div className='mb-32 md:mb-48 last:mb-0 flex flex-col items-center w-full'>
+			{/* Title & Subtitle ABOVE the gallery */}
 			<div className='w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center'>
 				<motion.h3
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true, margin: "-50px" }}
 					transition={{ duration: 0.5 }}
-					className='text-3xl md:text-4xl font-bold italic text-center text-gray-900 mb-8'
+					className='text-3xl md:text-4xl font-bold italic text-center text-gray-900 mb-2'
 				>
 					{work.client}
 				</motion.h3>
+				{work.subtitle && (
+					<motion.h4
+						initial={{ opacity: 0, y: 10 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-50px" }}
+						transition={{ duration: 0.5, delay: 0.1 }}
+						className='text-lg md:text-xl font-bold text-gray-800 text-center mb-8'
+					>
+						{work.subtitle}
+					</motion.h4>
+				)}
 			</div>
 
 			{!isDesktopLarge ? (
-				// NEW: Removed the screen-breaking hack and implemented a clean 100% width container for flawless mobile overflow
-				<div className='relative w-full py-8 overflow-hidden flex'>
+				// Reduced py-8 to py-2 to tighten mobile spacing
+				<div className='relative w-full py-2 overflow-hidden flex'>
 					<motion.div
 						className='flex gap-4 md:gap-6 w-max'
 						animate={{ x: ["0%", "-50%"] }}
@@ -595,7 +609,6 @@ const GraphicDesignGallery = ({ work, isDesktopLarge }: { work: GraphicDesignPro
 				</div>
 			) : (
 				<motion.div
-					// NEW: Triggers exactly when 10% of the gallery is in view, preventing the invisible opacity bug!
 					onViewportEnter={() => setHasEntered(true)}
 					viewport={{ once: true, amount: 0.1 }}
 					onMouseEnter={() => {
@@ -603,7 +616,8 @@ const GraphicDesignGallery = ({ work, isDesktopLarge }: { work: GraphicDesignPro
 						setHasInteracted(true);
 					}}
 					onMouseLeave={() => setIsHovered(false)}
-					className='relative w-full h-[500px] lg:h-[600px] flex items-center justify-center mt-6 mb-16'
+					// Tightened mt/mb to keep gallery close to text
+					className='relative w-full h-[500px] lg:h-[600px] flex items-center justify-center mt-0 mb-4'
 				>
 					{images.map((img: string, i: number) => {
 						const isCenter = i === 0;
@@ -625,7 +639,6 @@ const GraphicDesignGallery = ({ work, isDesktopLarge }: { work: GraphicDesignPro
 
 						const zIndex = 50 - i;
 
-						// Manual coordinate overrides ensure the images respond instantly to clicks without resetting!
 						const currentX = !hasEntered ? 0 : isHovered ? targetX_hover : targetX_rest;
 						const currentY = !hasEntered ? (isCenter ? 200 : 0) : isHovered ? targetY_hover : targetY_rest;
 						const currentScale = !hasEntered ? (isCenter ? 1 : 0.8) : isHovered ? 1.05 : 1;
@@ -673,30 +686,20 @@ const GraphicDesignGallery = ({ work, isDesktopLarge }: { work: GraphicDesignPro
 				</motion.div>
 			)}
 
-			<div className='w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center'>
-				{work.subtitle && (
-					<motion.h4
-						initial={{ opacity: 0, y: 10 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true, margin: "-50px" }}
-						transition={{ duration: 0.5, delay: 0.1 }}
-						className='text-lg md:text-xl font-bold text-gray-800 text-center mt-12 mb-4'
-					>
-						{work.subtitle}
-					</motion.h4>
-				)}
-				{work.desc && (
+			{/* Description tightly BELOW the gallery */}
+			{work.desc && (
+				<div className='w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 flex flex-col items-center'>
 					<motion.p
 						initial={{ opacity: 0, y: 10 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, margin: "-50px" }}
 						transition={{ duration: 0.5, delay: 0.2 }}
-						className='text-sm md:text-base text-gray-600 text-center max-w-3xl leading-relaxed'
+						className='text-sm md:text-base text-gray-600 text-center max-w-3xl leading-relaxed mt-4'
 					>
 						{work.desc}
 					</motion.p>
-				)}
-			</div>
+				</div>
+			)}
 		</div>
 	);
 };
@@ -721,7 +724,8 @@ const TestimonialsSection = () => {
 				</h2>
 			</motion.div>
 
-			<div className='grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 lg:gap-12 items-stretch'>
+			{/* Grid updated to center the 3rd item nicely on tablets (md breakpoint) */}
+			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-8 lg:gap-12 items-stretch'>
 				{testimonialsData.map((test, i) => (
 					<motion.div
 						key={i}
@@ -729,8 +733,9 @@ const TestimonialsSection = () => {
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, margin: "-50px" }}
 						transition={{ duration: 0.5, delay: i * 0.2 }}
-						className='relative group w-full h-full'
+						className={`relative group w-full h-full ${i === 2 ? "md:col-span-2 lg:col-span-1" : ""}`}
 					>
+						{/* THICKER BORDER AND SHARPER ANGLE (-13deg) */}
 						<div className='absolute inset-0 border-[3px] border-white/50 rounded-[2rem] transform -rotate-[13deg] transition-transform duration-300 group-hover:-rotate-[8deg]'></div>
 
 						<div className='relative bg-white rounded-[2rem] p-8 md:p-10 shadow-xl flex flex-col items-center text-center h-full'>
@@ -769,13 +774,17 @@ const ContactSection = () => {
 				</h2>
 			</div>
 
-			<hr className='border-white/20 mb-12 md:mb-16' />
+			{/* Increased thickness to 3px using border-t-[3px] */}
+			<hr className='border-t-[3px] border-white/20 mb-12 md:mb-16' />
 
 			<div className='grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8'>
 				<div className='flex flex-col gap-6'>
 					<div className='flex items-center gap-3'>
-						<div className='w-10 h-10 bg-white rounded-full flex items-center justify-center text-brandMaroon font-serif font-bold text-xl italic'>
-							SM
+						{/* Added a real Image Placeholder circle instead of the text "SM" */}
+						<div className='relative w-10 h-10 rounded-full overflow-hidden border-[1.5px] border-white'>
+							{/* Replace this with your actual logo file in public folder! */}
+							<Image src='/footerLogo.png' alt='Logo' fill className='object-cover' />
+							<div className='absolute inset-0 bg-brandPink -z-10'></div>
 						</div>
 						<span className='text-2xl font-semibold'>Sheremie</span>
 					</div>
@@ -790,16 +799,87 @@ const ContactSection = () => {
 						<br />
 						Replies within 24 hours
 					</p>
+
+					{/* Custom SVGs completely bypass the Lucide import errors! */}
 					<div className='flex items-center gap-4 mt-2'>
-						{[Phone, CircleFadingPlus, CircleFadingPlus, Mail].map((Icon, i) => (
-							<a
-								key={i}
-								href='#'
-								className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
+						{/* Phone */}
+						<a
+							href='#'
+							className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
+						>
+							<svg
+								width='16'
+								height='16'
+								viewBox='0 0 24 24'
+								fill='none'
+								stroke='currentColor'
+								strokeWidth='2'
+								strokeLinecap='round'
+								strokeLinejoin='round'
 							>
-								<Icon size={16} />
-							</a>
-						))}
+								<path d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z'></path>
+							</svg>
+						</a>
+
+						{/* Instagram */}
+						<a
+							href='#'
+							className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
+						>
+							<svg
+								width='16'
+								height='16'
+								viewBox='0 0 24 24'
+								fill='none'
+								stroke='currentColor'
+								strokeWidth='2'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+							>
+								<rect x='2' y='2' width='20' height='20' rx='5' ry='5'></rect>
+								<path d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'></path>
+								<line x1='17.5' y1='6.5' x2='17.51' y2='6.5'></line>
+							</svg>
+						</a>
+
+						{/* Facebook */}
+						<a
+							href='#'
+							className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
+						>
+							<svg
+								width='16'
+								height='16'
+								viewBox='0 0 24 24'
+								fill='none'
+								stroke='currentColor'
+								strokeWidth='2'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+							>
+								<path d='M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z'></path>
+							</svg>
+						</a>
+
+						{/* Mail */}
+						<a
+							href='#'
+							className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
+						>
+							<svg
+								width='16'
+								height='16'
+								viewBox='0 0 24 24'
+								fill='none'
+								stroke='currentColor'
+								strokeWidth='2'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+							>
+								<path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z'></path>
+								<polyline points='22,6 12,13 2,6'></polyline>
+							</svg>
+						</a>
 					</div>
 				</div>
 
@@ -816,11 +896,10 @@ const ContactSection = () => {
 					))}
 				</div>
 
+				{/* Removed personal names & handles per your request */}
 				<div className='flex flex-col gap-4'>
 					<h4 className='text-lg font-semibold text-white/80 mb-2'>Contact</h4>
 					<p className='text-sm md:text-base font-medium'>+63 961 482 3645</p>
-					<p className='text-sm md:text-base font-medium'>sheshesheremie</p>
-					<p className='text-sm md:text-base font-medium'>Sheremie B. Miranda</p>
 					<p className='text-sm md:text-base font-medium'>sheremiebmiranda@gmail.com</p>
 				</div>
 			</div>
@@ -894,7 +973,6 @@ export default function Home() {
 	};
 
 	return (
-		// Globally prevents horizontal scrolling for all the fanning animations
 		<div
 			className='min-h-screen flex flex-col overflow-x-hidden'
 			style={{ backgroundImage: 'url("/prism.svg")', backgroundRepeat: "repeat" }}
@@ -991,7 +1069,6 @@ export default function Home() {
 				</div>
 
 				<div className='absolute bottom-0 right-0 lg:right-[5%] w-full lg:w-1/2 h-full pointer-events-none flex items-end justify-center z-20'>
-					{/* UPDATED: Scaled down the entire image wrapper sizes by ~10% for a cleaner fit! */}
 					<motion.div
 						initial={{ opacity: 0, y: 50 }}
 						animate={!isLoading ? { opacity: 1, y: 0 } : {}}
