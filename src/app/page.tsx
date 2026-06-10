@@ -1104,7 +1104,7 @@ export default function Home() {
 		hidden: { opacity: 0, y: 10 },
 		visible: { opacity: 1, y: 0 },
 	};
-	const heroTickerLoop = [...heroTickerItems, ...heroTickerItems];
+	const heroTickerDuration = isPhone ? "28s" : isMobile ? "32s" : "49.2s";
 
 	return (
 		<div
@@ -1260,21 +1260,28 @@ export default function Home() {
 
 				<div className='absolute inset-x-0 bottom-0 z-20 flex h-[4.75rem] -translate-y-2 items-center overflow-hidden border-t border-white/10 bg-brandMaroon shadow-[0_-14px_32px_rgba(122,19,39,0.18)] md:h-[5.25rem] md:-translate-y-3'>
 					<p className='sr-only'>{heroTickerItems.join(", ")}.</p>
-					<motion.div
-						aria-hidden='true'
-						className='flex w-max min-w-full items-center gap-5 whitespace-nowrap pl-5 md:gap-7 md:pl-7'
-						animate={hasIntroStarted && !shouldReduceMotion ? { x: ["0%", "-50%"] } : { x: "0%" }}
-						transition={hasIntroStarted && !shouldReduceMotion ? { duration: 24, ease: "linear", repeat: Infinity } : undefined}
-					>
-						{heroTickerLoop.map((item, index) => (
-							<div key={`${item}-${index}`} className='flex items-center gap-5 text-white md:gap-7'>
-								<span className='text-[11px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.26em]'>
-									{item}
-								</span>
-								<Star size={13} fill='currentColor' strokeWidth={1.5} className='shrink-0' />
-							</div>
-						))}
-					</motion.div>
+					<div className='w-full overflow-hidden px-9'>
+						<div
+							aria-hidden='true'
+							className={`hero-ticker-track flex w-max items-center whitespace-nowrap ${
+								hasIntroStarted && !shouldReduceMotion ? "hero-ticker-track--animated" : ""
+							}`}
+							style={hasIntroStarted && !shouldReduceMotion ? { animationDuration: heroTickerDuration } : undefined}
+						>
+							{[0, 1].map((copyIndex) => (
+								<div key={copyIndex} className='flex shrink-0 items-center gap-9 pr-9'>
+									{heroTickerItems.map((item, index) => (
+										<div key={`${copyIndex}-${item}-${index}`} className='flex shrink-0 items-center gap-9 text-white'>
+											<span className='text-[14px] md:text-[19px] lg:text-[22px] font-semibold uppercase tracking-[0.22em] md:tracking-[0.24em] lg:tracking-[0.26em]'>
+												{item}
+											</span>
+											<Star size={13} fill='currentColor' strokeWidth={1.5} className='shrink-0' />
+										</div>
+									))}
+								</div>
+							))}
+						</div>
+					</div>
 				</div>
 			</main>
 
