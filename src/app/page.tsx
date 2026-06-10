@@ -1,7 +1,8 @@
 "use client";
 
+import AnimatedButton from "@/app/components/AnimatedButton";
 import Navbar from "@/app/components/Navbar";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useScroll, useInView } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useScroll, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { GraduationCap, Briefcase, Star } from "lucide-react";
@@ -119,6 +120,21 @@ const workData = [
 	{ date: "Jun 2025 - Mar 2026", title: "Virtual Assistant", desc: "Win with Barlow | EZMobileDNA" },
 	{ date: "Feb 2025 - Mar 2026", title: "Content Manager", desc: "Mascon Tech | Seartify" },
 	{ date: "Oct 2024 - Jan 2025", title: "Social Media Manager", desc: "LW Business Innovations" },
+];
+
+const aboutStats = [
+	{ value: "400+", label: "Projects Completed" },
+	{ value: "10+", label: "Industries Served" },
+	{ value: "2+", label: "Years of Experience" },
+];
+
+const heroTickerItems = [
+	"Admin Support",
+	"Inbox Management",
+	"Calendar Planning",
+	"Client Communication",
+	"Content Coordination",
+	"Reliable Virtual Assistance",
 ];
 
 const testimonialsData = [
@@ -310,7 +326,7 @@ const ServicesSection = ({ isMobile, isPhone }: { isMobile: boolean; isPhone: bo
 							</ul>
 						</div>
 						<button
-							className={`w-full relative z-20 py-3.5 rounded-full font-bold tracking-wider text-sm transition-transform hover:-translate-y-1 shadow-lg ${service.btnClass}`}
+							className={`w-full relative z-20 py-3.5 rounded-full font-bold tracking-wider text-sm transition-colors shadow-lg ${service.btnClass}`}
 						>
 							GET STARTED
 						</button>
@@ -363,61 +379,108 @@ const ToolsSection = () => (
 	</section>
 );
 
-const AboutSection = () => (
-	<section id='about' className='py-16 md:py-24'>
-		<div className='flex justify-center mb-6'>
-			<div className='flex items-center gap-3'>
-				<div className='w-6 h-[1px] bg-white/60'></div>
-				<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>About Me</span>
-			</div>
-		</div>
-		<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-[45%_1fr] gap-6 items-center'>
-			<div className='relative w-full mx-auto flex justify-center mt-8 lg:mt-0'>
-				<Image
-					src='/sherAboutMe.png'
-					alt='Sheremie'
-					width={600}
-					height={600}
-					className='w-full h-auto object-contain drop-shadow-xl'
-				/>
-			</div>
-			<div className='flex flex-col gap-6 text-white text-center lg:text-left'>
-				<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
-					Who is <span className='text-brandPink italic'>Sheremie?</span>
-				</h2>
-				<p className='text-white/80 text-sm md:text-base leading-relaxed'>
-					I&apos;m Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
-					organized and on track. With experience in admin support, content management, and client coordination, I focus
-					on making day-to-day tasks easier and more manageable. I&apos;m detail-oriented, reliable, and committed to
-					delivering support that actually makes a difference.
-				</p>
-				<p className='text-white/80 text-sm md:text-base leading-relaxed'>
-					I&apos;m always improving my skills and learning better systems to provide efficient and consistent support
-					for every client I work with. Let&apos;s work together and make your workload lighter.
-				</p>
-				<div className='grid grid-cols-3 gap-4 my-4'>
-					<div>
-						<h4 className='text-3xl md:text-4xl font-bold mb-1'>400+</h4>
-						<p className='text-white/70 text-xs md:text-sm'>Projects Completed</p>
-					</div>
-					<div>
-						<h4 className='text-3xl md:text-4xl font-bold mb-1'>10+</h4>
-						<p className='text-white/70 text-xs md:text-sm'>Industry Serves</p>
-					</div>
-					<div>
-						<h4 className='text-3xl md:text-4xl font-bold mb-1'>2+</h4>
-						<p className='text-white/70 text-xs md:text-sm'>Years of Experience</p>
-					</div>
+const AboutSection = () => {
+	const shouldReduceMotion = useReducedMotion();
+	const aboutContainerVariants = {
+		hidden: { opacity: 1 },
+		visible: {
+			opacity: 1,
+			transition: {
+				staggerChildren: shouldReduceMotion ? 0 : 0.12,
+				delayChildren: shouldReduceMotion ? 0 : 0.08,
+			},
+		},
+	};
+	const aboutItemVariants = {
+		hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 22 },
+		visible: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				duration: shouldReduceMotion ? 0 : 0.62,
+				ease: [0.22, 1, 0.36, 1] as const,
+			},
+		},
+	};
+	const aboutStatsVariants = {
+		hidden: { opacity: 1 },
+		visible: {
+			opacity: 1,
+			transition: {
+				staggerChildren: shouldReduceMotion ? 0 : 0.08,
+				delayChildren: shouldReduceMotion ? 0 : 0.02,
+			},
+		},
+	};
+
+	return (
+		<section id='about' className='py-16 md:py-24'>
+			<motion.div
+				initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 18 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true, margin: "-60px" }}
+				transition={{ duration: shouldReduceMotion ? 0 : 0.55 }}
+				className='flex justify-center mb-6'
+			>
+				<div className='flex items-center gap-3'>
+					<div className='w-6 h-[1px] bg-white/60'></div>
+					<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>About Me</span>
 				</div>
-				<div className='pt-4 flex justify-center lg:justify-start'>
-					<button className='bg-white hover:bg-gray-100 text-brandMaroon px-8 py-3.5 rounded-full text-sm font-bold transition-all shadow-lg hover:-translate-y-1'>
-						Work With Me
-					</button>
-				</div>
+			</motion.div>
+			<div className='max-w-7xl mx-auto px-6 md:px-12 lg:px-24 grid grid-cols-1 lg:grid-cols-[45%_1fr] gap-6 items-center'>
+				<motion.div
+					initial={{ opacity: 0, x: shouldReduceMotion ? 0 : -60 }}
+					whileInView={{ opacity: 1, x: 0 }}
+					viewport={{ once: true, margin: "-80px" }}
+					transition={{ duration: shouldReduceMotion ? 0 : 0.8, ease: [0.22, 1, 0.36, 1] }}
+					className='relative w-full mx-auto flex justify-center mt-8 lg:mt-0'
+				>
+					<Image
+						src='/sherAboutMe.png'
+						alt='Sheremie'
+						width={600}
+						height={600}
+						className='w-full h-auto object-contain drop-shadow-xl'
+					/>
+				</motion.div>
+				<motion.div
+					initial='hidden'
+					whileInView='visible'
+					viewport={{ once: true, margin: "-80px" }}
+					variants={aboutContainerVariants}
+					className='flex flex-col gap-6 text-white text-center lg:text-left'
+				>
+					<motion.h2 variants={aboutItemVariants} className='text-4xl md:text-5xl font-bold leading-tight'>
+						Who is <span className='text-brandPink italic'>Sheremie?</span>
+					</motion.h2>
+					<motion.p variants={aboutItemVariants} className='text-white/80 text-sm md:text-base leading-relaxed'>
+						I&apos;m Sheremie, a Virtual Assistant and Marketing Management student who helps business owners stay
+						organized and on track. With experience in admin support, content management, and client coordination, I
+						focus on making day-to-day tasks easier and more manageable. I&apos;m detail-oriented, reliable, and
+						committed to delivering support that actually makes a difference.
+					</motion.p>
+					<motion.p variants={aboutItemVariants} className='text-white/80 text-sm md:text-base leading-relaxed'>
+						I&apos;m always improving my skills and learning better systems to provide efficient and consistent support
+						for every client I work with. Let&apos;s work together and make your workload lighter.
+					</motion.p>
+					<motion.div variants={aboutStatsVariants} className='grid grid-cols-3 gap-4 my-4'>
+						{aboutStats.map((stat) => (
+							<motion.div key={stat.label} variants={aboutItemVariants}>
+								<h4 className='text-3xl md:text-4xl font-bold mb-1'>{stat.value}</h4>
+								<p className='text-white/70 text-xs md:text-sm'>{stat.label}</p>
+							</motion.div>
+						))}
+					</motion.div>
+					<motion.div variants={aboutItemVariants} className='pt-4 flex justify-center lg:justify-start'>
+						<button className='bg-white hover:bg-gray-100 text-brandMaroon px-8 py-3.5 rounded-full text-sm font-bold transition-colors shadow-lg'>
+							Work With Me
+						</button>
+					</motion.div>
+				</motion.div>
 			</div>
-		</div>
-	</section>
-);
+		</section>
+	);
+};
 
 const ExperienceSection = ({ isPhone }: { isPhone: boolean }) => {
 	const experienceRef = useRef<HTMLElement>(null);
@@ -617,7 +680,7 @@ const GraphicDesignGallery = ({ work, isDesktopLarge }: { work: GraphicDesignPro
 					}}
 					onMouseLeave={() => setIsHovered(false)}
 					// Tightened mt/mb to keep gallery close to text
-					className='relative w-full h-[500px] lg:h-[600px] flex items-center justify-center mt-0 mb-4'
+					className='relative isolate w-full h-[500px] lg:h-[600px] flex items-center justify-center mt-0 mb-4'
 				>
 					{images.map((img: string, i: number) => {
 						const isCenter = i === 0;
@@ -637,7 +700,7 @@ const GraphicDesignGallery = ({ work, isDesktopLarge }: { work: GraphicDesignPro
 						const targetY_hover = isCenter ? -30 : step * 20;
 						const targetRotate_hover = isCenter ? 0 : direction * step * 8;
 
-						const zIndex = 50 - i;
+						const zIndex = images.length - i;
 
 						const currentX = !hasEntered ? 0 : isHovered ? targetX_hover : targetX_rest;
 						const currentY = !hasEntered ? (isCenter ? 200 : 0) : isHovered ? targetY_hover : targetY_rest;
@@ -759,12 +822,67 @@ const TestimonialsSection = () => {
 
 // --- NEW CONTACT / FOOTER SECTION ---
 const ContactSection = () => {
+	const shouldReduceMotion = useReducedMotion();
+	const footerViewport = { once: true, margin: "-80px" };
+	const footerStaggerVariants = {
+		hidden: { opacity: 1 },
+		visible: {
+			opacity: 1,
+			transition: {
+				staggerChildren: shouldReduceMotion ? 0 : 0.14,
+				delayChildren: shouldReduceMotion ? 0 : 0.06,
+			},
+		},
+	};
+	const footerRevealVariants = {
+		hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 28 },
+		visible: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				duration: shouldReduceMotion ? 0 : 0.65,
+				ease: [0.22, 1, 0.36, 1] as const,
+			},
+		},
+	};
+	const footerNestedVariants = {
+		hidden: { opacity: 1 },
+		visible: {
+			opacity: 1,
+			transition: {
+				staggerChildren: shouldReduceMotion ? 0 : 0.08,
+				delayChildren: shouldReduceMotion ? 0 : 0.04,
+			},
+		},
+	};
+	const footerItemVariants = {
+		hidden: {
+			opacity: 0,
+			x: shouldReduceMotion ? 0 : -16,
+			y: shouldReduceMotion ? 0 : 10,
+		},
+		visible: {
+			opacity: 1,
+			x: 0,
+			y: 0,
+			transition: {
+				duration: shouldReduceMotion ? 0 : 0.5,
+				ease: [0.22, 1, 0.36, 1] as const,
+			},
+		},
+	};
+	const socialHover = shouldReduceMotion ? {} : { y: -3, scale: 1.05 };
+
 	return (
-		<section
+		<motion.section
 			id='contact'
 			className='relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-24 pt-24 pb-12 z-40 text-white'
+			initial='hidden'
+			whileInView='visible'
+			viewport={footerViewport}
+			variants={footerStaggerVariants}
 		>
-			<div className='flex flex-col mb-12 md:mb-16'>
+			<motion.div variants={footerRevealVariants} className='flex flex-col mb-12 md:mb-16'>
 				<div className='flex items-center gap-3 mb-4'>
 					<div className='w-6 h-[1px] bg-white/60'></div>
 					<span className='text-white/80 text-sm font-medium tracking-wide uppercase'>Contact</span>
@@ -772,38 +890,35 @@ const ContactSection = () => {
 				<h2 className='text-4xl md:text-5xl font-bold leading-tight'>
 					Let&apos;s <span className='italic text-brandPink'>Connect!</span>
 				</h2>
-			</div>
+			</motion.div>
 
-			{/* Increased thickness to 3px using border-t-[3px] */}
-			<hr className='border-t-[3px] border-white/20 mb-12 md:mb-16' />
+			<motion.hr variants={footerRevealVariants} className='border-t-[3px] border-white/20 mb-12 md:mb-16' />
 
 			<div className='grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8'>
-				<div className='flex flex-col gap-6'>
-					<div className='flex items-center gap-3'>
-						{/* Added a real Image Placeholder circle instead of the text "SM" */}
-						<div className='relative w-10 h-10 rounded-full overflow-hidden border-[1.5px] border-white'>
-							{/* Replace this with your actual logo file in public folder! */}
-							<Image src='/footerLogo.png' alt='Logo' fill className='object-cover' />
-							<div className='absolute inset-0 bg-brandPink -z-10'></div>
-						</div>
-						<span className='text-2xl font-semibold'>Sheremie</span>
-					</div>
-					<p className='text-sm md:text-base leading-relaxed text-white/90 font-medium'>
-						Need help managing your tasks and staying organized? I&apos;m here to support you! Let&apos;s work together
-						to make your day easier.
-					</p>
-					<p className='text-sm italic text-white/80 leading-relaxed font-medium'>
-						Based in the Philippines (GMT+8)
-						<br />
-						Open to international clients
-						<br />
-						Replies within 24 hours
-					</p>
-
-					{/* Custom SVGs completely bypass the Lucide import errors! */}
-					<div className='flex items-center gap-4 mt-2'>
+				<motion.div variants={footerRevealVariants} className='flex flex-col gap-6'>
+					<motion.div variants={footerNestedVariants} className='flex flex-col gap-6'>
+						<motion.div variants={footerItemVariants} className='flex items-center gap-3'>
+							<div className='relative w-10 h-10 rounded-full overflow-hidden border-[1.5px] border-white'>
+								<Image src='/sbmLogo.png' alt='Logo' fill className='object-cover' />
+								<div className='absolute inset-0 bg-brandPink -z-10'></div>
+							</div>
+							<span className='text-2xl font-semibold'>Sheremie</span>
+						</motion.div>
+						<motion.p variants={footerItemVariants} className='text-sm md:text-base leading-relaxed text-white/90 font-medium'>
+							Need help managing your tasks and staying organized? I&apos;m here to support you! Let&apos;s work
+							together to make your day easier.
+						</motion.p>
+						<motion.p variants={footerItemVariants} className='text-sm italic text-white/80 leading-relaxed font-medium'>
+							Based in the Philippines (GMT+8)
+							<br />
+							Open to international clients
+							<br />
+							Replies within 24 hours
+						</motion.p>
+						<motion.div variants={footerItemVariants} className='flex items-center gap-4 mt-2'>
 						{/* Phone */}
-						<a
+						<motion.a
+							whileHover={socialHover}
 							href='#'
 							className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
 						>
@@ -819,10 +934,11 @@ const ContactSection = () => {
 							>
 								<path d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z'></path>
 							</svg>
-						</a>
+						</motion.a>
 
 						{/* Instagram */}
-						<a
+						<motion.a
+							whileHover={socialHover}
 							href='#'
 							className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
 						>
@@ -840,10 +956,11 @@ const ContactSection = () => {
 								<path d='M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z'></path>
 								<line x1='17.5' y1='6.5' x2='17.51' y2='6.5'></line>
 							</svg>
-						</a>
+						</motion.a>
 
 						{/* Facebook */}
-						<a
+						<motion.a
+							whileHover={socialHover}
 							href='#'
 							className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
 						>
@@ -859,10 +976,11 @@ const ContactSection = () => {
 							>
 								<path d='M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z'></path>
 							</svg>
-						</a>
+						</motion.a>
 
 						{/* Mail */}
-						<a
+						<motion.a
+							whileHover={socialHover}
 							href='#'
 							className='w-8 h-8 bg-white rounded-full flex items-center justify-center text-brandMaroon hover:bg-brandPink hover:text-white transition-colors'
 						>
@@ -879,35 +997,48 @@ const ContactSection = () => {
 								<path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z'></path>
 								<polyline points='22,6 12,13 2,6'></polyline>
 							</svg>
-						</a>
-					</div>
-				</div>
+						</motion.a>
+						</motion.div>
+					</motion.div>
+				</motion.div>
 
-				<div className='flex flex-col gap-4 md:pl-12'>
-					<h4 className='text-lg font-semibold text-white/80 mb-2'>Navigation</h4>
-					{["Home", "Services", "About Me", "Portfolio", "Testimonials"].map((link) => (
-						<a
-							key={link}
-							href={`#${link.toLowerCase().replace(" ", "-")}`}
-							className='text-sm md:text-base font-medium hover:text-brandPink transition-colors'
-						>
-							{link}
-						</a>
-					))}
-				</div>
+				<motion.div variants={footerRevealVariants} className='flex flex-col gap-4 md:pl-12'>
+					<motion.div variants={footerNestedVariants} className='flex flex-col gap-4'>
+						<motion.h4 variants={footerItemVariants} className='text-lg font-semibold text-white/80 mb-2'>
+							Navigation
+						</motion.h4>
+						{["Home", "Services", "About Me", "Portfolio", "Testimonials"].map((link) => (
+							<motion.a
+								key={link}
+								variants={footerItemVariants}
+								href={`#${link.toLowerCase().replace(" ", "-")}`}
+								className='text-sm md:text-base font-medium hover:text-brandPink transition-colors'
+							>
+								{link}
+							</motion.a>
+						))}
+					</motion.div>
+				</motion.div>
 
-				{/* Removed personal names & handles per your request */}
-				<div className='flex flex-col gap-4'>
-					<h4 className='text-lg font-semibold text-white/80 mb-2'>Contact</h4>
-					<p className='text-sm md:text-base font-medium'>+63 961 482 3645</p>
-					<p className='text-sm md:text-base font-medium'>sheremiebmiranda@gmail.com</p>
-				</div>
+				<motion.div variants={footerRevealVariants} className='flex flex-col gap-4'>
+					<motion.div variants={footerNestedVariants} className='flex flex-col gap-4'>
+						<motion.h4 variants={footerItemVariants} className='text-lg font-semibold text-white/80 mb-2'>
+							Contact
+						</motion.h4>
+						<motion.p variants={footerItemVariants} className='text-sm md:text-base font-medium'>
+							+63 961 482 3645
+						</motion.p>
+						<motion.p variants={footerItemVariants} className='text-sm md:text-base font-medium'>
+							sheremiebmiranda@gmail.com
+						</motion.p>
+					</motion.div>
+				</motion.div>
 			</div>
 
-			<div className='mt-24 text-center text-xs font-medium text-white/60'>
-				© 2026 Sheremie B. Miranda. All Rights Reserved.
-			</div>
-		</section>
+			<motion.div variants={footerRevealVariants} className='mt-24 text-center text-xs font-medium text-white/60'>
+				&copy; 2026 Sheremie B. Miranda. All Rights Reserved.
+			</motion.div>
+		</motion.section>
 	);
 };
 
@@ -916,9 +1047,11 @@ const ContactSection = () => {
 // ==========================================
 export default function Home() {
 	const [isLoading, setIsLoading] = useState(true);
+	const [hasIntroStarted, setHasIntroStarted] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
 	const [isPhone, setIsPhone] = useState(false);
 	const [isDesktopLarge, setIsDesktopLarge] = useState(false);
+	const shouldReduceMotion = useReducedMotion();
 
 	useEffect(() => {
 		const checkBreakpoints = () => {
@@ -957,27 +1090,28 @@ export default function Home() {
 
 	const helloVariants = {
 		hidden: { opacity: 0 },
-		visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.2 } },
+		visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
 	};
 	const titleVariants = {
 		hidden: { opacity: 0 },
-		visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 1.6 } },
+		visible: { opacity: 1, transition: { staggerChildren: 0.04, delayChildren: 0.35 } },
 	};
 	const fadeVariants = {
 		hidden: { opacity: 0, y: 10 },
-		visible: { opacity: 1, y: 0, transition: { delay: 3.6, duration: 0.8 } },
+		visible: { opacity: 1, y: 0, transition: { delay: 0.85, duration: 0.8 } },
 	};
 	const letterVariants = {
 		hidden: { opacity: 0, y: 10 },
 		visible: { opacity: 1, y: 0 },
 	};
+	const heroTickerLoop = [...heroTickerItems, ...heroTickerItems];
 
 	return (
 		<div
-			className='min-h-screen flex flex-col overflow-x-hidden'
+			className='min-h-screen flex flex-col overflow-x-hidden isolate'
 			style={{ backgroundImage: 'url("/prism.svg")', backgroundRepeat: "repeat" }}
 		>
-			<AnimatePresence>
+			<AnimatePresence onExitComplete={() => setHasIntroStarted(true)}>
 				{isLoading && (
 					<motion.div
 						initial={{ opacity: 1 }}
@@ -999,14 +1133,14 @@ export default function Home() {
 			<main
 				id='home'
 				onMouseMove={handleMouseMove}
-				className='relative pt-32 pb-16 md:pt-40 md:pb-24 lg:pt-48 px-6 md:px-12 lg:px-24'
+				className='relative overflow-x-clip px-6 pt-32 pb-24 md:px-12 md:pt-40 md:pb-28 lg:px-24 lg:pt-44 lg:pb-32'
 			>
-				<div className='w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[55%_45%] gap-4 lg:gap-12 z-40 relative pb-[350px] md:pb-[340px] lg:pb-[140px]'>
+				<div className='relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:gap-12'>
 					<div className='flex flex-col gap-4 md:gap-6 w-full mt-2 md:mt-0 pr-0 lg:pr-8'>
 						<motion.h2
 							variants={helloVariants}
 							initial='hidden'
-							animate={!isLoading ? "visible" : "hidden"}
+							animate={hasIntroStarted ? "visible" : "hidden"}
 							className='text-lg md:text-xl lg:text-2xl text-gray-600 font-medium flex'
 						>
 							{"Hello There!".split("").map((char, i) => (
@@ -1019,7 +1153,7 @@ export default function Home() {
 						<motion.h1
 							variants={titleVariants}
 							initial='hidden'
-							animate={!isLoading ? "visible" : "hidden"}
+							animate={hasIntroStarted ? "visible" : "hidden"}
 							className='text-[32px] leading-tight sm:text-4xl md:text-5xl xl:text-6xl font-bold text-gray-900 md:leading-tight'
 						>
 							{"I'm ".split("").map((char, i) => (
@@ -1051,7 +1185,7 @@ export default function Home() {
 						<motion.div
 							variants={fadeVariants}
 							initial='hidden'
-							animate={!isLoading ? "visible" : "hidden"}
+							animate={hasIntroStarted ? "visible" : "hidden"}
 							className='flex flex-col gap-4 md:gap-6'
 						>
 							<p className='text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed max-w-md'>
@@ -1060,74 +1194,87 @@ export default function Home() {
 							</p>
 							<p className='text-xs md:text-sm text-gray-500 italic'>Currently available for 2-3 new clients</p>
 							<div className='pt-2'>
-								<button className='bg-brandMaroon hover:bg-[#600f1e] text-white px-6 py-3 md:px-8 md:py-3.5 rounded-full text-sm md:text-base font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-1'>
+								<AnimatedButton href='#contact' size='lg' className='min-w-[214px]'>
 									Hire Me!
-								</button>
+								</AnimatedButton>
 							</div>
+						</motion.div>
+					</div>
+					<div className='relative flex justify-center lg:justify-end pointer-events-none'>
+						<motion.div
+							initial={{ opacity: 0, y: 50 }}
+							animate={hasIntroStarted ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+							transition={{ duration: 0.8, delay: 0.4 }}
+							className='relative z-10 w-full max-w-[350px] translate-y-4 sm:max-w-[420px] sm:translate-y-6 md:max-w-[460px] md:translate-y-8 lg:max-w-[520px] lg:translate-y-10 xl:max-w-[620px] 2xl:max-w-[680px]'
+						>
+							<div className='absolute top-[10%] right-[5%] w-full aspect-square -z-10 text-brandPink pointer-events-none'>
+								<svg
+									className='w-full h-full transform translate-x-4'
+									viewBox='0 0 200 200'
+									xmlns='http://www.w3.org/2000/svg'
+								>
+									<path
+										fill='currentColor'
+										d='M51.9,-64.8C65.5,-51.9,73.5,-32.5,75.4,-13.2C77.3,6.2,73.1,25.5,61.9,39.6C50.7,53.7,32.5,62.6,12.7,67.6C-7.2,72.5,-28.6,73.5,-44.6,63.9C-60.6,54.3,-71.2,34.1,-74.6,12.8C-78,-8.5,-74.2,-30.9,-61.8,-45.3C-49.4,-59.6,-28.4,-65.9,-8.6,-68.2C11.3,-70.5,38.3,-77.8,51.9,-64.8Z'
+										transform='translate(100 100) scale(1.1)'
+									/>
+								</svg>
+							</div>
+							<Image
+								src='/sheremie.png'
+								alt='Sheremie - Virtual Assistant'
+								width={520}
+								height={700}
+								className='pointer-events-auto h-auto max-h-[58vh] w-full object-contain object-bottom sm:max-h-[62vh] md:max-h-[66vh] lg:max-h-[72vh]'
+								priority
+							/>
+							<motion.div
+								style={{ x: tooltip1X, y: tooltip1Y }}
+								className='absolute right-[2%] md:right-0 lg:right-[-2%] bottom-[45%] md:bottom-[40%] z-30 pointer-events-auto'
+							>
+								<motion.div
+									animate={hasIntroStarted ? { y: [0, -8, 0] } : { y: 0 }}
+									transition={{ repeat: hasIntroStarted ? Infinity : 0, duration: 3, ease: "easeInOut" }}
+									className='relative bg-brandPink text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-medium shadow-lg whitespace-nowrap'
+								>
+									The Support You Need
+									<div className='absolute top-1/2 -translate-y-1/2 -left-1.5 md:-left-2 w-0 h-0 border-y-[4px] md:border-y-[6px] border-y-transparent border-r-[6px] md:border-r-[8px] border-r-brandPink'></div>
+								</motion.div>
+							</motion.div>
+							<motion.div
+								style={{ x: tooltip2X, y: tooltip2Y }}
+								className='absolute left-[2%] md:left-0 lg:left-[-4%] bottom-[15%] md:bottom-[20%] z-30 pointer-events-auto'
+							>
+								<motion.div
+									animate={hasIntroStarted ? { y: [0, 8, 0] } : { y: 0 }}
+									transition={{ repeat: hasIntroStarted ? Infinity : 0, duration: 4, ease: "easeInOut" }}
+									className='relative bg-brandMaroon text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-medium shadow-lg whitespace-nowrap'
+								>
+									Your Virtual Assistant
+									<div className='absolute -top-1.5 md:-top-2 left-4 md:left-6 w-0 h-0 border-x-[4px] md:border-x-[6px] border-x-transparent border-b-[6px] md:border-b-[8px] border-b-brandMaroon'></div>
+								</motion.div>
+							</motion.div>
 						</motion.div>
 					</div>
 				</div>
 
-				<div className='absolute bottom-0 right-0 lg:right-[5%] w-full lg:w-1/2 h-full pointer-events-none flex items-end justify-center z-20'>
+				<div className='absolute inset-x-0 bottom-0 z-20 flex h-[4.75rem] -translate-y-2 items-center overflow-hidden border-t border-white/10 bg-brandMaroon shadow-[0_-14px_32px_rgba(122,19,39,0.18)] md:h-[5.25rem] md:-translate-y-3'>
+					<p className='sr-only'>{heroTickerItems.join(", ")}.</p>
 					<motion.div
-						initial={{ opacity: 0, y: 50 }}
-						animate={!isLoading ? { opacity: 1, y: 0 } : {}}
-						transition={{ duration: 0.8, delay: 0.4 }}
-						className='relative z-10 w-[65%] sm:w-[55%] max-w-[350px] lg:max-w-none lg:w-[75%] xl:w-[60%] 2xl:w-[55%]'
+						aria-hidden='true'
+						className='flex w-max min-w-full items-center gap-5 whitespace-nowrap pl-5 md:gap-7 md:pl-7'
+						animate={hasIntroStarted && !shouldReduceMotion ? { x: ["0%", "-50%"] } : { x: "0%" }}
+						transition={hasIntroStarted && !shouldReduceMotion ? { duration: 24, ease: "linear", repeat: Infinity } : undefined}
 					>
-						<div className='absolute top-[10%] right-[5%] w-full aspect-square -z-10 text-brandPink pointer-events-none'>
-							<svg
-								className='w-full h-full transform translate-x-4'
-								viewBox='0 0 200 200'
-								xmlns='http://www.w3.org/2000/svg'
-							>
-								<path
-									fill='currentColor'
-									d='M51.9,-64.8C65.5,-51.9,73.5,-32.5,75.4,-13.2C77.3,6.2,73.1,25.5,61.9,39.6C50.7,53.7,32.5,62.6,12.7,67.6C-7.2,72.5,-28.6,73.5,-44.6,63.9C-60.6,54.3,-71.2,34.1,-74.6,12.8C-78,-8.5,-74.2,-30.9,-61.8,-45.3C-49.4,-59.6,-28.4,-65.9,-8.6,-68.2C11.3,-70.5,38.3,-77.8,51.9,-64.8Z'
-									transform='translate(100 100) scale(1.1)'
-								/>
-							</svg>
-						</div>
-						<Image
-							src='/sheremie.png'
-							alt='Sheremie - Virtual Assistant'
-							width={520}
-							height={700}
-							className='w-full h-auto object-contain object-bottom pointer-events-auto'
-							priority
-						/>
-						<motion.div
-							style={{ x: tooltip1X, y: tooltip1Y }}
-							className='absolute right-[2%] md:right-0 lg:right-[-2%] bottom-[45%] md:bottom-[40%] z-30 pointer-events-auto'
-						>
-							<motion.div
-								animate={{ y: [0, -8, 0] }}
-								transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-								className='relative bg-brandPink text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-medium shadow-lg whitespace-nowrap'
-							>
-								The Support You Need
-								<div className='absolute top-1/2 -translate-y-1/2 -left-1.5 md:-left-2 w-0 h-0 border-y-[4px] md:border-y-[6px] border-y-transparent border-r-[6px] md:border-r-[8px] border-r-brandPink'></div>
-							</motion.div>
-						</motion.div>
-						<motion.div
-							style={{ x: tooltip2X, y: tooltip2Y }}
-							className='absolute left-[2%] md:left-0 lg:left-[-4%] bottom-[15%] md:bottom-[20%] z-30 pointer-events-auto'
-						>
-							<motion.div
-								animate={{ y: [0, 8, 0] }}
-								transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-								className='relative bg-brandMaroon text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-medium shadow-lg whitespace-nowrap'
-							>
-								Your Virtual Assistant
-								<div className='absolute -top-1.5 md:-top-2 left-4 md:left-6 w-0 h-0 border-x-[4px] md:border-x-[6px] border-x-transparent border-b-[6px] md:border-b-[8px] border-b-brandMaroon'></div>
-							</motion.div>
-						</motion.div>
+						{heroTickerLoop.map((item, index) => (
+							<div key={`${item}-${index}`} className='flex items-center gap-5 text-white md:gap-7'>
+								<span className='text-[11px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.26em]'>
+									{item}
+								</span>
+								<Star size={13} fill='currentColor' strokeWidth={1.5} className='shrink-0' />
+							</div>
+						))}
 					</motion.div>
-				</div>
-
-				<div className='absolute bottom-0 left-0 w-full h-8 z-30 pointer-events-none flex items-end justify-center'>
-					<div className='absolute w-[110%] h-8 bg-brandMaroon rotate-[-5deg] md:rotate-[-2deg] lg:rotate-[-1.5deg] origin-center'></div>
-					<div className='absolute w-full h-8 bg-brandPink'></div>
 				</div>
 			</main>
 
@@ -1182,3 +1329,4 @@ export default function Home() {
 		</div>
 	);
 }
+

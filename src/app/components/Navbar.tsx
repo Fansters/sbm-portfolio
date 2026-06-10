@@ -32,9 +32,9 @@ export default function Navbar() {
 
 	return (
 		<>
-			<header className='fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md z-50 px-6 py-4 md:px-12 lg:px-24 flex items-center justify-between shadow-sm'>
+			<header className='fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md z-[120] px-6 py-4 md:px-12 lg:px-24 flex items-center justify-between shadow-sm'>
 				{/* Logo */}
-				<Link href='#home' className='flex items-center gap-2 cursor-pointer z-[60] relative'>
+				<Link href='#home' className='flex items-center gap-2 cursor-pointer z-[140] relative'>
 					<div className='relative flex items-center justify-center'>
 						<Image src='/sbmLogo.png' alt='SBM Logo' width={40} height={40} className='object-contain' priority />
 					</div>
@@ -75,7 +75,7 @@ export default function Navbar() {
 				<div className='hidden xl:block'>
 					<Link
 						href='#contact'
-						className='bg-brandMaroon hover:bg-[#600f1e] text-white px-6 py-2.5 rounded-full text-sm font-medium transition-all shadow-md'
+						className='bg-brandMaroon hover:bg-[#600f1e] text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors shadow-md'
 					>
 						Get Started
 					</Link>
@@ -83,7 +83,7 @@ export default function Navbar() {
 
 				{/* Mobile Menu Toggle Button */}
 				<button
-					className='xl:hidden text-gray-800 p-2 z-[60] relative transition-transform'
+					className='xl:hidden text-gray-800 p-2 z-[140] relative transition-transform'
 					onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
 				>
 					<AnimatePresence mode='wait'>
@@ -115,7 +115,7 @@ export default function Navbar() {
 				initial='closed'
 				animate={isMobileMenuOpen ? "open" : "closed"}
 				variants={menuVariants}
-				className='fixed inset-0 z-50 bg-brandMaroon xl:hidden flex flex-col items-center justify-center pointer-events-none'
+				className='fixed inset-0 z-[130] bg-brandMaroon xl:hidden flex flex-col items-center justify-center pointer-events-none'
 				style={{ pointerEvents: isMobileMenuOpen ? "auto" : "none" }}
 			>
 				<motion.div variants={linkContainerVariants} className='flex flex-col items-center gap-8 w-full'>
